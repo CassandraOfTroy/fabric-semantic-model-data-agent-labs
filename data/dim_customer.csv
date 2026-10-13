@@ -1,0 +1,104 @@
+customer_key,customer_name,customer_type,city,country,country_code,sales_region,key_account
+1001,Berlin Teaching Hospital,Hospital,Berlin,Germany,DE,DACH,Yes
+1002,Hamburg General Hospital,Hospital,Hamburg,Germany,DE,DACH,No
+1003,Frankfurt Specialist Clinic,Specialty Clinic,Frankfurt,Germany,DE,DACH,No
+1004,Berlin Central Pharmacy,Retail Pharmacy,Berlin,Germany,DE,DACH,No
+1005,Hamburg Market Pharmacy,Retail Pharmacy,Hamburg,Germany,DE,DACH,No
+1006,Munich Station Pharmacy,Retail Pharmacy,Munich,Germany,DE,DACH,No
+1007,Germany Pharma Distribution,Wholesaler,Berlin,Germany,DE,DACH,Yes
+1008,Germany Healthcare Logistics,Wholesaler,Hamburg,Germany,DE,DACH,No
+1009,Vienna Teaching Hospital,Hospital,Vienna,Austria,AT,DACH,Yes
+1010,Graz General Hospital,Hospital,Graz,Austria,AT,DACH,No
+1011,Linz Specialist Clinic,Specialty Clinic,Linz,Austria,AT,DACH,No
+1012,Vienna Central Pharmacy,Retail Pharmacy,Vienna,Austria,AT,DACH,No
+1013,Graz Market Pharmacy,Retail Pharmacy,Graz,Austria,AT,DACH,No
+1014,Linz Station Pharmacy,Retail Pharmacy,Linz,Austria,AT,DACH,No
+1015,Austria Pharma Distribution,Wholesaler,Vienna,Austria,AT,DACH,No
+1016,Zurich Teaching Hospital,Hospital,Zurich,Switzerland,CH,DACH,Yes
+1017,Basel General Hospital,Hospital,Basel,Switzerland,CH,DACH,No
+1018,Geneva Specialist Clinic,Specialty Clinic,Geneva,Switzerland,CH,DACH,No
+1019,Zurich Central Pharmacy,Retail Pharmacy,Zurich,Switzerland,CH,DACH,No
+1020,Basel Market Pharmacy,Retail Pharmacy,Basel,Switzerland,CH,DACH,No
+1021,Geneva Station Pharmacy,Retail Pharmacy,Geneva,Switzerland,CH,DACH,No
+1022,Switzerland Pharma Distribution,Wholesaler,Zurich,Switzerland,CH,DACH,No
+1023,Paris Teaching Hospital,Hospital,Paris,France,FR,Western Europe,Yes
+1024,Lyon General Hospital,Hospital,Lyon,France,FR,Western Europe,No
+1025,Toulouse Specialist Clinic,Specialty Clinic,Toulouse,France,FR,Western Europe,No
+1026,Paris Central Pharmacy,Retail Pharmacy,Paris,France,FR,Western Europe,No
+1027,Lyon Market Pharmacy,Retail Pharmacy,Lyon,France,FR,Western Europe,No
+1028,Marseille Station Pharmacy,Retail Pharmacy,Marseille,France,FR,Western Europe,No
+1029,France Pharma Distribution,Wholesaler,Paris,France,FR,Western Europe,Yes
+1030,France Healthcare Logistics,Wholesaler,Lyon,France,FR,Western Europe,No
+1031,Brussels Teaching Hospital,Hospital,Brussels,Belgium,BE,Western Europe,Yes
+1032,Antwerp General Hospital,Hospital,Antwerp,Belgium,BE,Western Europe,No
+1033,Ghent Specialist Clinic,Specialty Clinic,Ghent,Belgium,BE,Western Europe,No
+1034,Brussels Central Pharmacy,Retail Pharmacy,Brussels,Belgium,BE,Western Europe,No
+1035,Antwerp Market Pharmacy,Retail Pharmacy,Antwerp,Belgium,BE,Western Europe,No
+1036,Ghent Station Pharmacy,Retail Pharmacy,Ghent,Belgium,BE,Western Europe,No
+1037,Belgium Pharma Distribution,Wholesaler,Brussels,Belgium,BE,Western Europe,No
+1038,Amsterdam Teaching Hospital,Hospital,Amsterdam,Netherlands,NL,Western Europe,Yes
+1039,Rotterdam General Hospital,Hospital,Rotterdam,Netherlands,NL,Western Europe,No
+1040,Utrecht Specialist Clinic,Specialty Clinic,Utrecht,Netherlands,NL,Western Europe,No
+1041,Amsterdam Central Pharmacy,Retail Pharmacy,Amsterdam,Netherlands,NL,Western Europe,No
+1042,Rotterdam Market Pharmacy,Retail Pharmacy,Rotterdam,Netherlands,NL,Western Europe,No
+1043,Utrecht Station Pharmacy,Retail Pharmacy,Utrecht,Netherlands,NL,Western Europe,No
+1044,Netherlands Pharma Distribution,Wholesaler,Amsterdam,Netherlands,NL,Western Europe,No
+1045,Milan Teaching Hospital,Hospital,Milan,Italy,IT,Southern Europe,Yes
+1046,Rome General Hospital,Hospital,Rome,Italy,IT,Southern Europe,No
+1047,Turin Specialist Clinic,Specialty Clinic,Turin,Italy,IT,Southern Europe,No
+1048,Milan Central Pharmacy,Retail Pharmacy,Milan,Italy,IT,Southern Europe,No
+1049,Rome Market Pharmacy,Retail Pharmacy,Rome,Italy,IT,Southern Europe,No
+1050,Naples Station Pharmacy,Retail Pharmacy,Naples,Italy,IT,Southern Europe,No
+1051,Italy Pharma Distribution,Wholesaler,Milan,Italy,IT,Southern Europe,Yes
+1052,Italy Healthcare Logistics,Wholesaler,Rome,Italy,IT,Southern Europe,No
+1053,Madrid Teaching Hospital,Hospital,Madrid,Spain,ES,Southern Europe,Yes
+1054,Barcelona General Hospital,Hospital,Barcelona,Spain,ES,Southern Europe,No
+1055,Seville Specialist Clinic,Specialty Clinic,Seville,Spain,ES,Southern Europe,No
+1056,Madrid Central Pharmacy,Retail Pharmacy,Madrid,Spain,ES,Southern Europe,No
+1057,Barcelona Market Pharmacy,Retail Pharmacy,Barcelona,Spain,ES,Southern Europe,No
+1058,Valencia Station Pharmacy,Retail Pharmacy,Valencia,Spain,ES,Southern Europe,No
+1059,Spain Pharma Distribution,Wholesaler,Madrid,Spain,ES,Southern Europe,Yes
+1060,Spain Healthcare Logistics,Wholesaler,Barcelona,Spain,ES,Southern Europe,No
+1061,Lisbon Teaching Hospital,Hospital,Lisbon,Portugal,PT,Southern Europe,Yes
+1062,Porto General Hospital,Hospital,Porto,Portugal,PT,Southern Europe,No
+1063,Porto Specialist Clinic,Specialty Clinic,Porto,Portugal,PT,Southern Europe,No
+1064,Lisbon Central Pharmacy,Retail Pharmacy,Lisbon,Portugal,PT,Southern Europe,No
+1065,Porto Market Pharmacy,Retail Pharmacy,Porto,Portugal,PT,Southern Europe,No
+1066,Lisbon Station Pharmacy,Retail Pharmacy,Lisbon,Portugal,PT,Southern Europe,No
+1067,Portugal Pharma Distribution,Wholesaler,Lisbon,Portugal,PT,Southern Europe,No
+1068,Stockholm Teaching Hospital,Hospital,Stockholm,Sweden,SE,Nordics,Yes
+1069,Gothenburg General Hospital,Hospital,Gothenburg,Sweden,SE,Nordics,No
+1070,Malmo Specialist Clinic,Specialty Clinic,Malmo,Sweden,SE,Nordics,No
+1071,Stockholm Central Pharmacy,Retail Pharmacy,Stockholm,Sweden,SE,Nordics,No
+1072,Gothenburg Market Pharmacy,Retail Pharmacy,Gothenburg,Sweden,SE,Nordics,No
+1073,Malmo Station Pharmacy,Retail Pharmacy,Malmo,Sweden,SE,Nordics,No
+1074,Sweden Pharma Distribution,Wholesaler,Stockholm,Sweden,SE,Nordics,No
+1075,Copenhagen Teaching Hospital,Hospital,Copenhagen,Denmark,DK,Nordics,Yes
+1076,Aarhus General Hospital,Hospital,Aarhus,Denmark,DK,Nordics,No
+1077,Aarhus Specialist Clinic,Specialty Clinic,Aarhus,Denmark,DK,Nordics,No
+1078,Copenhagen Central Pharmacy,Retail Pharmacy,Copenhagen,Denmark,DK,Nordics,No
+1079,Aarhus Market Pharmacy,Retail Pharmacy,Aarhus,Denmark,DK,Nordics,No
+1080,Copenhagen Station Pharmacy,Retail Pharmacy,Copenhagen,Denmark,DK,Nordics,No
+1081,Denmark Pharma Distribution,Wholesaler,Copenhagen,Denmark,DK,Nordics,No
+1082,Oslo Teaching Hospital,Hospital,Oslo,Norway,NO,Nordics,Yes
+1083,Bergen General Hospital,Hospital,Bergen,Norway,NO,Nordics,No
+1084,Bergen Specialist Clinic,Specialty Clinic,Bergen,Norway,NO,Nordics,No
+1085,Oslo Central Pharmacy,Retail Pharmacy,Oslo,Norway,NO,Nordics,No
+1086,Bergen Market Pharmacy,Retail Pharmacy,Bergen,Norway,NO,Nordics,No
+1087,Oslo Station Pharmacy,Retail Pharmacy,Oslo,Norway,NO,Nordics,No
+1088,Norway Pharma Distribution,Wholesaler,Oslo,Norway,NO,Nordics,No
+1089,London Teaching Hospital,Hospital,London,United Kingdom,GB,UK & Ireland,Yes
+1090,Manchester General Hospital,Hospital,Manchester,United Kingdom,GB,UK & Ireland,No
+1091,Leeds Specialist Clinic,Specialty Clinic,Leeds,United Kingdom,GB,UK & Ireland,No
+1092,London Central Pharmacy,Retail Pharmacy,London,United Kingdom,GB,UK & Ireland,No
+1093,Manchester Market Pharmacy,Retail Pharmacy,Manchester,United Kingdom,GB,UK & Ireland,No
+1094,Birmingham Station Pharmacy,Retail Pharmacy,Birmingham,United Kingdom,GB,UK & Ireland,No
+1095,United Kingdom Pharma Distribution,Wholesaler,London,United Kingdom,GB,UK & Ireland,Yes
+1096,United Kingdom Healthcare Logistics,Wholesaler,Manchester,United Kingdom,GB,UK & Ireland,No
+1097,Dublin Teaching Hospital,Hospital,Dublin,Ireland,IE,UK & Ireland,Yes
+1098,Cork General Hospital,Hospital,Cork,Ireland,IE,UK & Ireland,No
+1099,Cork Specialist Clinic,Specialty Clinic,Cork,Ireland,IE,UK & Ireland,No
+1100,Dublin Central Pharmacy,Retail Pharmacy,Dublin,Ireland,IE,UK & Ireland,No
+1101,Cork Market Pharmacy,Retail Pharmacy,Cork,Ireland,IE,UK & Ireland,No
+1102,Dublin Station Pharmacy,Retail Pharmacy,Dublin,Ireland,IE,UK & Ireland,No
+1103,Ireland Pharma Distribution,Wholesaler,Dublin,Ireland,IE,UK & Ireland,No

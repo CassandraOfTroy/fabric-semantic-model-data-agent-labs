@@ -1,0 +1,18 @@
+// Lab 1, step 4 fallback, if Copilot isn't available: adds the two time-intelligence measures.
+// Paste into a new DAX query view tab, select Run, then "Update model with changes".
+// Expected: Net Sales YoY % for 2025 = 10.0 %
+
+DEFINE
+    /// Year-over-year change of net sales, in percent.
+    MEASURE 'Sales'[Net Sales YoY %] = DIVIDE ( [Net Sales] - [Net Sales PY], [Net Sales PY] )
+
+    /// Net sales from 1 January to the last date in the current filter context.
+    MEASURE 'Sales'[Net Sales YTD] = TOTALYTD ( [Net Sales], 'Date'[date] )
+
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Date'[year],
+    "Net Sales YoY %", [Net Sales YoY %],
+    "Net Sales YTD", [Net Sales YTD]
+)
+ORDER BY 'Date'[year]

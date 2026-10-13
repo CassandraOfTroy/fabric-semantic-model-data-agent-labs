@@ -1,0 +1,13 @@
+product_key,product_name,brand,therapeutic_area,formulation,launch_date,list_price_eur
+1,Zentora 100 mg tablets,Zentora,Oncology,Tablet,2019-03-01,2450.00
+2,Zentora 250 mg tablets,Zentora,Oncology,Tablet,2020-09-01,5600.00
+3,Onkivex 400 mg infusion,Onkivex,Oncology,Infusion,2021-05-01,3900.00
+4,Immunara 150 mg pen,Immunara,Immunology,Pre-filled pen,2022-02-01,1250.00
+5,Immunara 300 mg pen,Immunara,Immunology,Pre-filled pen,2024-06-01,2300.00
+6,Neurovanta 20 mg capsules,Neurovanta,Neuroscience,Capsule,2018-11-01,310.00
+7,Neurovanta 40 mg capsules,Neurovanta,Neuroscience,Capsule,2018-11-01,540.00
+8,Cardiqa 5 mg tablets,Cardiqa,Cardiovascular,Tablet,2014-04-01,38.00
+9,Cardiqa 10 mg tablets,Cardiqa,Cardiovascular,Tablet,2014-04-01,64.00
+10,Ocularis 2 mg injection,Ocularis,Ophthalmology,Intravitreal injection,2020-01-01,890.00
+11,Ocularis 4 mg injection,Ocularis,Ophthalmology,Intravitreal injection,2021-07-01,1520.00
+12,Viraquel 75 mg capsules,Viraquel,Infectious Diseases,Capsule,2017-10-01,45.00

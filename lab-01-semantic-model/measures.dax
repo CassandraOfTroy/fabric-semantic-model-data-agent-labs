@@ -1,0 +1,51 @@
+// Lab 1, step 4: paste this whole file into a new tab in DAX query view.
+// 1. Select Run to check the results.
+// 2. Select "Update model with changes" to add the measures to the model.
+// The /// lines become the measure descriptions.
+// Expected results for 2025: Net Sales = 293,801,286.38 | Discount % = 0.104
+
+DEFINE
+    /// Net sales in EUR after discounts and rebates. Use for any question about sales or revenue.
+    MEASURE 'Sales'[Net Sales] = SUM ( 'Sales'[net_sales_eur] )
+
+    /// Gross sales in EUR before discounts: packs sold multiplied by the country list price.
+    MEASURE 'Sales'[Gross Sales] = SUM ( 'Sales'[gross_sales_eur] )
+
+    /// Discounts and rebates in EUR (gross sales minus net sales).
+    MEASURE 'Sales'[Discount Amount] = SUM ( 'Sales'[discount_eur] )
+
+    /// Discounts and rebates as a share of gross sales.
+    MEASURE 'Sales'[Discount %] = DIVIDE ( [Discount Amount], [Gross Sales] )
+
+    /// Number of packs sold.
+    MEASURE 'Sales'[Units Sold] = SUM ( 'Sales'[units] )
+
+    /// Average net price per pack in EUR.
+    MEASURE 'Sales'[Net Price per Unit] = DIVIDE ( [Net Sales], [Units Sold] )
+
+    /// Number of customers with at least one order.
+    MEASURE 'Sales'[Active Customers] = DISTINCTCOUNT ( 'Sales'[customer_key] )
+
+    /// Net sales in the same period of the previous year.
+    MEASURE 'Sales'[Net Sales PY] = CALCULATE ( [Net Sales], SAMEPERIODLASTYEAR ( 'Date'[date] ) )
+
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Date'[year],
+    "Net Sales", [Net Sales],
+    "Net Sales PY", [Net Sales PY],
+    "Discount %", [Discount %],
+    "Units Sold", [Units Sold]
+)
+ORDER BY 'Date'[year]
+
+// ---------------------------------------------------------------------------
+// Reference answers for the Copilot exercise (step 4.4). Compare them with what Copilot wrote.
+//
+//    /// Year-over-year change of net sales, in percent.
+//    MEASURE 'Sales'[Net Sales YoY %] = DIVIDE ( [Net Sales] - [Net Sales PY], [Net Sales PY] )
+//
+//    /// Net sales from 1 January to the last date in the current filter context.
+//    MEASURE 'Sales'[Net Sales YTD] = TOTALYTD ( [Net Sales], 'Date'[date] )
+//
+// Expected: Net Sales YoY % for 2025 = 10.0 %

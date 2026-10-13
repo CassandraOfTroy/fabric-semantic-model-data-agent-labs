@@ -1,0 +1,13 @@
+id,expected_source,question,what_good_looks_like,source_used,visual_shown,result_pass_partial_fail,feedback_for_developer
+Q01,Semantic model,What were total net sales in 2025?,"One EUR amount for calendar year 2025, based on net sales",,,,
+Q02,Semantic model,Which therapeutic area had the highest net sales in 2025?,One therapeutic area with its 2025 net sales,,,,
+Q03,Semantic model,How much did Immunology net sales grow in 2025 compared with 2024?,A growth percentage with the 2024 and 2025 values,,,,
+Q04,Semantic model,What are the top 3 countries by net sales in 2026?,"Three countries ranked, with amounts and the period (January to September 2026)",,,,
+Q05,Semantic model,What was the discount % by channel in 2025?,A percentage for each of the three channels,,,,
+Q06,Lakehouse,How many quality complaints were received for Zentora 100 mg tablets in Germany in April 2026?,"One count of complaints, using the lakehouse",,,,
+Q07,Lakehouse,In which weeks was Zentora 100 mg tablets out of stock in Germany?,A list or range of weeks with stock status Stock-out,,,,
+Q08,Lakehouse,Which batch had the most quality complaints in 2026?,One batch number with its complaint count,,,,
+Q09,Semantic model,Show monthly net sales of Zentora 100 mg tablets in Germany in 2026 as a line chart.,"A line chart by month, with no gaps from January to September 2026",,,,
+Q10,Both,Why did net sales of Zentora 100 mg tablets in Germany drop in May 2026?,"Combines sales (model) with stock-out and complaints (lakehouse) for the same product, country and period",,,,
+Q11,None: clarifying question expected,How are we doing in DACH?,Asks one clarifying question (which metric or which period) before it runs any query,,,,
+Q12,Semantic model (RLS test),What were net sales in France in 2025?,Run as a user in the DACH RLS role: returns no France data,,,,

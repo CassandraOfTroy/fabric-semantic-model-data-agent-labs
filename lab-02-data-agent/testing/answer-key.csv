@@ -1,0 +1,11 @@
+id,persona,expected_source,question,expected_answer,result,notes
+Q01,Business user,Semantic model,What were total net sales in 2025?,EUR 293.8 M,,
+Q02,Business user,Semantic model,Which therapeutic area had the highest net sales in 2025?,Oncology (EUR 103.4 M),,
+Q03,Business user,Semantic model,How much did Immunology net sales grow in 2025 compared with 2024?,49.2% (EUR 43.4 M to EUR 64.7 M),,
+Q04,Business user,Semantic model,What are the top 3 countries by net sales in 2026?,Germany (EUR 37.9 M); France (EUR 30.1 M); United Kingdom (EUR 27.2 M),,
+Q05,Business user,Semantic model,What was the discount % by channel in 2025?,"Direct 5.8%, Wholesale 12.0%, Tender 20.0%",,
+Q06,Business user,Lakehouse,How many quality complaints were received for Zentora 100 mg tablets in Germany in April 2026?,43,,
+Q07,Business user,Lakehouse,In which weeks was Zentora 100 mg tablets out of stock in Germany?,7 weeks: week ending 2026-05-03 to week ending 2026-06-14,,
+Q08,Business user,Lakehouse,Which batch had the most quality complaints in 2026?,ZT100-2603B (46 complaints),,
+Q09,Business user,Semantic model,Show monthly net sales of Zentora 100 mg tablets in Germany in 2026 as a line chart.,"Line chart. Jan: EUR 727 k, Feb: EUR 597 k, Mar: EUR 666 k, Apr: EUR 660 k, May: EUR 167 k, Jun: EUR 273 k, Jul: EUR 1,142 k, Aug: EUR 801 k, Sep: EUR 683 k",,
+Q10,Business user,Both,Why did net sales of Zentora 100 mg tablets in Germany drop in May 2026?,"Net sales fell from EUR 660 k (April) to EUR 167 k (May). Germany was out of stock from week ending 2026-05-03 to 2026-06-14, after 43 packaging complaints in April 2026 on batch ZT100-2603B (Blister foil torn on receipt; Blister seal not intact; Tablets loose in carton, blister seal open).",,
