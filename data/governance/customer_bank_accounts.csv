@@ -1,0 +1,104 @@
+customer_key,customer_name,country,account_holder,iban,bic,payment_terms_days,direct_debit_mandate
+1001,Berlin Teaching Hospital,Germany,Berlin Teaching Hospital,DE19158813998698797309,CTPHDE2X,60,Yes
+1002,Hamburg General Hospital,Germany,Hamburg General Hospital,DE24707536455681518844,NRPHDE3A,60,Yes
+1003,Frankfurt Specialist Clinic,Germany,Frankfurt Specialist Clinic,DE24557616987168976846,NRPHDE2X,45,Yes
+1004,Berlin Central Pharmacy,Germany,Berlin Central Pharmacy,DE04081967273177848648,NRPHDE8C,90,Yes
+1005,Hamburg Market Pharmacy,Germany,Hamburg Market Pharmacy,DE57440029787534778768,CTPHDE5B,60,No
+1006,Munich Station Pharmacy,Germany,Munich Station Pharmacy,DE73178472671475136270,CTPHDE2X,90,Yes
+1007,Germany Pharma Distribution,Germany,Germany Pharma Distribution,DE56933190845205997283,NRPHDE3A,60,Yes
+1008,Germany Healthcare Logistics,Germany,Germany Healthcare Logistics,DE63622948662836016105,EUPHDE2X,30,No
+1009,Vienna Teaching Hospital,Austria,Vienna Teaching Hospital,AT115475177992298369,EUPHAT8C,45,Yes
+1010,Graz General Hospital,Austria,Graz General Hospital,AT268603208073702838,MDPHAT3A,45,No
+1011,Linz Specialist Clinic,Austria,Linz Specialist Clinic,AT384686164252477647,MDPHAT5B,90,No
+1012,Vienna Central Pharmacy,Austria,Vienna Central Pharmacy,AT921884133017568205,MDPHAT5B,45,Yes
+1013,Graz Market Pharmacy,Austria,Graz Market Pharmacy,AT239489394948214162,CTPHAT2X,60,Yes
+1014,Linz Station Pharmacy,Austria,Linz Station Pharmacy,AT431854914524410646,CTPHAT2X,30,Yes
+1015,Austria Pharma Distribution,Austria,Austria Pharma Distribution,AT770411895579906593,NRPHAT8C,30,No
+1016,Zurich Teaching Hospital,Switzerland,Zurich Teaching Hospital,CH1484645060454146590,EUPHCH3A,30,Yes
+1017,Basel General Hospital,Switzerland,Basel General Hospital,CH3329110285940692566,NRPHCH3A,90,Yes
+1018,Geneva Specialist Clinic,Switzerland,Geneva Specialist Clinic,CH5622808864230048764,EUPHCH3A,30,Yes
+1019,Zurich Central Pharmacy,Switzerland,Zurich Central Pharmacy,CH5080845850037038265,MDPHCH5B,60,Yes
+1020,Basel Market Pharmacy,Switzerland,Basel Market Pharmacy,CH4655778794326270586,CTPHCH3A,30,No
+1021,Geneva Station Pharmacy,Switzerland,Geneva Station Pharmacy,CH2758421083949066882,CTPHCH2X,45,No
+1022,Switzerland Pharma Distribution,Switzerland,Switzerland Pharma Distribution,CH0758440932448452630,NRPHCH8C,60,Yes
+1023,Paris Teaching Hospital,France,Paris Teaching Hospital,FR9380258220180515438299321,EUPHFR8C,30,Yes
+1024,Lyon General Hospital,France,Lyon General Hospital,FR6464941577188357951117443,MDPHFR5B,90,No
+1025,Toulouse Specialist Clinic,France,Toulouse Specialist Clinic,FR7657652373556963279264515,EUPHFR8C,60,Yes
+1026,Paris Central Pharmacy,France,Paris Central Pharmacy,FR7384352814497660856517883,NRPHFR5B,60,Yes
+1027,Lyon Market Pharmacy,France,Lyon Market Pharmacy,FR9862048425996775003145037,EUPHFR5B,30,Yes
+1028,Marseille Station Pharmacy,France,Marseille Station Pharmacy,FR0980125373924196898210460,MDPHFR3A,90,No
+1029,France Pharma Distribution,France,France Pharma Distribution,FR6555597475407207547354864,MDPHFR2X,90,Yes
+1030,France Healthcare Logistics,France,France Healthcare Logistics,FR8188479188957555218248861,MDPHFR2X,90,Yes
+1031,Brussels Teaching Hospital,Belgium,Brussels Teaching Hospital,BE07368828347285,EUPHBE8C,45,Yes
+1032,Antwerp General Hospital,Belgium,Antwerp General Hospital,BE08982229004422,EUPHBE5B,45,No
+1033,Ghent Specialist Clinic,Belgium,Ghent Specialist Clinic,BE22220226978043,EUPHBE2X,90,No
+1034,Brussels Central Pharmacy,Belgium,Brussels Central Pharmacy,BE95252807001594,EUPHBE2X,45,Yes
+1035,Antwerp Market Pharmacy,Belgium,Antwerp Market Pharmacy,BE33166323373528,NRPHBE8C,90,No
+1036,Ghent Station Pharmacy,Belgium,Ghent Station Pharmacy,BE56347897133115,MDPHBE2X,45,Yes
+1037,Belgium Pharma Distribution,Belgium,Belgium Pharma Distribution,BE29636082445607,NRPHBE5B,60,No
+1038,Amsterdam Teaching Hospital,Netherlands,Amsterdam Teaching Hospital,NL36EDZE8357699085,EUPHNL2X,90,No
+1039,Rotterdam General Hospital,Netherlands,Rotterdam General Hospital,NL15LRZQ8144019018,NRPHNL2X,90,No
+1040,Utrecht Specialist Clinic,Netherlands,Utrecht Specialist Clinic,NL31TPRA2520161284,CTPHNL2X,30,Yes
+1041,Amsterdam Central Pharmacy,Netherlands,Amsterdam Central Pharmacy,NL48XKWE4735736385,NRPHNL2X,90,Yes
+1042,Rotterdam Market Pharmacy,Netherlands,Rotterdam Market Pharmacy,NL14TFOG1979678073,NRPHNL2X,90,Yes
+1043,Utrecht Station Pharmacy,Netherlands,Utrecht Station Pharmacy,NL53JHQK4690598281,EUPHNL3A,30,Yes
+1044,Netherlands Pharma Distribution,Netherlands,Netherlands Pharma Distribution,NL57OMZD1660330428,EUPHNL5B,30,No
+1045,Milan Teaching Hospital,Italy,Milan Teaching Hospital,IT11F0381780578037041214304,CTPHIT8C,60,Yes
+1046,Rome General Hospital,Italy,Rome General Hospital,IT50W8288983708538671300668,CTPHIT8C,45,Yes
+1047,Turin Specialist Clinic,Italy,Turin Specialist Clinic,IT27H2838564271051298372527,CTPHIT3A,30,No
+1048,Milan Central Pharmacy,Italy,Milan Central Pharmacy,IT49C7695851904316349992480,CTPHIT5B,45,No
+1049,Rome Market Pharmacy,Italy,Rome Market Pharmacy,IT15S1372987112098426407942,NRPHIT2X,90,Yes
+1050,Naples Station Pharmacy,Italy,Naples Station Pharmacy,IT49D3571647744796745219803,MDPHIT5B,90,Yes
+1051,Italy Pharma Distribution,Italy,Italy Pharma Distribution,IT67W5213629586398488645732,EUPHIT2X,45,No
+1052,Italy Healthcare Logistics,Italy,Italy Healthcare Logistics,IT71F6927670940985846388498,EUPHIT5B,90,Yes
+1053,Madrid Teaching Hospital,Spain,Madrid Teaching Hospital,ES6106866953896501332796,NRPHES3A,90,Yes
+1054,Barcelona General Hospital,Spain,Barcelona General Hospital,ES2750811136179581635401,CTPHES5B,45,No
+1055,Seville Specialist Clinic,Spain,Seville Specialist Clinic,ES4161138759211532771862,CTPHES2X,90,No
+1056,Madrid Central Pharmacy,Spain,Madrid Central Pharmacy,ES9417707751062614883615,MDPHES2X,45,No
+1057,Barcelona Market Pharmacy,Spain,Barcelona Market Pharmacy,ES2646135161994569943982,NRPHES5B,30,No
+1058,Valencia Station Pharmacy,Spain,Valencia Station Pharmacy,ES2987464397258444193039,EUPHES5B,30,No
+1059,Spain Pharma Distribution,Spain,Spain Pharma Distribution,ES5266979615679596505654,NRPHES2X,60,No
+1060,Spain Healthcare Logistics,Spain,Spain Healthcare Logistics,ES4070904880156464403301,MDPHES3A,30,No
+1061,Lisbon Teaching Hospital,Portugal,Lisbon Teaching Hospital,PT25987198890421631111960,MDPHPT8C,30,No
+1062,Porto General Hospital,Portugal,Porto General Hospital,PT51658730642482960179677,MDPHPT2X,60,Yes
+1063,Porto Specialist Clinic,Portugal,Porto Specialist Clinic,PT54263478923524013761561,CTPHPT5B,30,No
+1064,Lisbon Central Pharmacy,Portugal,Lisbon Central Pharmacy,PT48833541488181378522238,EUPHPT2X,90,No
+1065,Porto Market Pharmacy,Portugal,Porto Market Pharmacy,PT24975332571929480853470,EUPHPT3A,60,No
+1066,Lisbon Station Pharmacy,Portugal,Lisbon Station Pharmacy,PT38613414617544201461338,CTPHPT2X,60,Yes
+1067,Portugal Pharma Distribution,Portugal,Portugal Pharma Distribution,PT79051478658930597760553,EUPHPT5B,90,Yes
+1068,Stockholm Teaching Hospital,Sweden,Stockholm Teaching Hospital,SE8506709072761514136334,MDPHSE8C,30,Yes
+1069,Gothenburg General Hospital,Sweden,Gothenburg General Hospital,SE8008752623942464668631,NRPHSE8C,60,Yes
+1070,Malmo Specialist Clinic,Sweden,Malmo Specialist Clinic,SE2898997453581342172334,NRPHSE8C,90,Yes
+1071,Stockholm Central Pharmacy,Sweden,Stockholm Central Pharmacy,SE8544104751688656114108,MDPHSE3A,60,No
+1072,Gothenburg Market Pharmacy,Sweden,Gothenburg Market Pharmacy,SE4934940429474781824460,MDPHSE8C,30,No
+1073,Malmo Station Pharmacy,Sweden,Malmo Station Pharmacy,SE3768080100052007009170,MDPHSE3A,90,Yes
+1074,Sweden Pharma Distribution,Sweden,Sweden Pharma Distribution,SE7430570304887781661146,MDPHSE5B,30,Yes
+1075,Copenhagen Teaching Hospital,Denmark,Copenhagen Teaching Hospital,DK6902038300403004,MDPHDK8C,45,No
+1076,Aarhus General Hospital,Denmark,Aarhus General Hospital,DK2916715529301267,CTPHDK2X,45,No
+1077,Aarhus Specialist Clinic,Denmark,Aarhus Specialist Clinic,DK1570579299239813,MDPHDK8C,30,Yes
+1078,Copenhagen Central Pharmacy,Denmark,Copenhagen Central Pharmacy,DK8871861581299914,NRPHDK2X,90,No
+1079,Aarhus Market Pharmacy,Denmark,Aarhus Market Pharmacy,DK4955485066351676,MDPHDK5B,90,Yes
+1080,Copenhagen Station Pharmacy,Denmark,Copenhagen Station Pharmacy,DK3048124172643662,MDPHDK2X,45,Yes
+1081,Denmark Pharma Distribution,Denmark,Denmark Pharma Distribution,DK4082422042628370,EUPHDK2X,90,Yes
+1082,Oslo Teaching Hospital,Norway,Oslo Teaching Hospital,NO1018898704151,NRPHNO2X,30,Yes
+1083,Bergen General Hospital,Norway,Bergen General Hospital,NO8232526956378,MDPHNO8C,90,Yes
+1084,Bergen Specialist Clinic,Norway,Bergen Specialist Clinic,NO4782196121385,NRPHNO2X,90,Yes
+1085,Oslo Central Pharmacy,Norway,Oslo Central Pharmacy,NO2902238696953,EUPHNO3A,45,No
+1086,Bergen Market Pharmacy,Norway,Bergen Market Pharmacy,NO1346550135100,NRPHNO3A,90,Yes
+1087,Oslo Station Pharmacy,Norway,Oslo Station Pharmacy,NO9071124335165,EUPHNO2X,90,Yes
+1088,Norway Pharma Distribution,Norway,Norway Pharma Distribution,NO1315431610302,MDPHNO5B,30,Yes
+1089,London Teaching Hospital,United Kingdom,London Teaching Hospital,GB61DLFA51148294183419,CTPHGB3A,45,No
+1090,Manchester General Hospital,United Kingdom,Manchester General Hospital,GB17XUCH52122238637877,NRPHGB2X,60,Yes
+1091,Leeds Specialist Clinic,United Kingdom,Leeds Specialist Clinic,GB32LJFJ68542427641297,EUPHGB5B,90,No
+1092,London Central Pharmacy,United Kingdom,London Central Pharmacy,GB57MBIX71393605504965,NRPHGB2X,90,Yes
+1093,Manchester Market Pharmacy,United Kingdom,Manchester Market Pharmacy,GB40KNIW33387926877109,NRPHGB5B,60,No
+1094,Birmingham Station Pharmacy,United Kingdom,Birmingham Station Pharmacy,GB69MTJZ03720568326607,EUPHGB8C,90,No
+1095,United Kingdom Pharma Distribution,United Kingdom,United Kingdom Pharma Distribution,GB76CNXJ80788203962209,NRPHGB8C,60,Yes
+1096,United Kingdom Healthcare Logistics,United Kingdom,United Kingdom Healthcare Logistics,GB16XWTP11009897600282,MDPHGB2X,90,Yes
+1097,Dublin Teaching Hospital,Ireland,Dublin Teaching Hospital,IE41CUZN92984427820624,EUPHIE3A,30,No
+1098,Cork General Hospital,Ireland,Cork General Hospital,IE26YOIN64323167779214,CTPHIE5B,45,No
+1099,Cork Specialist Clinic,Ireland,Cork Specialist Clinic,IE96JOUZ96725218990332,CTPHIE3A,90,No
+1100,Dublin Central Pharmacy,Ireland,Dublin Central Pharmacy,IE97QNSF27138312947150,MDPHIE5B,45,Yes
+1101,Cork Market Pharmacy,Ireland,Cork Market Pharmacy,IE70BPJF56579837176345,MDPHIE8C,30,No
+1102,Dublin Station Pharmacy,Ireland,Dublin Station Pharmacy,IE16XIKA11459460965845,CTPHIE2X,90,No
+1103,Ireland Pharma Distribution,Ireland,Ireland Pharma Distribution,IE26WQKD48101331560408,MDPHIE8C,30,No

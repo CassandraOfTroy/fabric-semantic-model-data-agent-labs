@@ -37,6 +37,12 @@ Break 2025 net sales down by customer type as a column chart.
 Show the weekly stock status of Zentora 100 mg tablets in Germany from April to July 2026.
 ```
 
+![A line chart answer: monthly net sales of Zentora 100 mg tablets in Germany in 2026, with the May drop](../docs/images/ui/lab2-03-answer-chart.png)
+
+When you ask *why*, the agent can combine both sources in one answer and attach a chart. The run steps show one step per source:
+
+![The answer to question 4 with a chart built from both sources](../docs/images/ui/lab2-02-answer-why.png)
+
 Good to know:
 
 - Hover over a chart to see tooltips. Charts use at most 200 rows. Colours, fonts and titles are preset.

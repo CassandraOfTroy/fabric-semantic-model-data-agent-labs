@@ -46,6 +46,7 @@ Optional for the Lab 2 demo of Microsoft 365 Copilot: the Microsoft 365 admin mu
    | --- | --- |
    | `00_Shared` | The shared lakehouse `LH_ContosoPharma` (step 4) |
    | `REF` | Your reference items (step 5) |
+   | `GOV` | The DLP demo lakehouse `LH_Customer_Finance` (step 6). Participants don't use it |
    | `P01` … `P25` | One folder per participant |
 
    Use **New folder** in the workspace ([Create folders in workspaces](https://learn.microsoft.com/fabric/fundamentals/workspaces-folders)), or run the script. It calls the [Create Folder](https://learn.microsoft.com/rest/api/fabric/core/folders/create-folder) REST API:
@@ -82,17 +83,20 @@ Do both labs yourself in the folder `REF`, with the names `REF_Sales_Model`, `RE
 - gives participants a fallback: anyone who falls behind can continue Lab 2 with `REF_Sales_Model`.
 - creates audit records you can show in the governance demo. Audit data isn't instant.
 
+Two things the dry run showed: a model created with **+ New item** > **Semantic model** is saved in the workspace root, not in the open folder (move it with **…** > **Move to**). And **Assume referential integrity** isn't selected by default in **New relationship**; without it every slicer shows an extra **(Blank)** item.
+
 ## 6. Prepare the security demos
 
 See [governance/README.md](../governance/README.md) for the full list. At minimum:
 
-1. **RLS test user:** a second account that is **not** a member of the workspace. RLS applies only to the Viewer role, not to Admin, Member or Contributor ([Row-level security](https://learn.microsoft.com/fabric/security/service-admin-row-level-security)).
-   - Add the test user to the `DACH` role of `REF_Sales_Model`.
-   - Share `REF_Sales_Model` (Read) and `REF_Sales_Agent` with the test user.
-   - Share `LH_ContosoPharma` with the test user and select **Read all with Apache Spark** ([Lakehouse sharing](https://learn.microsoft.com/fabric/data-engineering/lakehouse-sharing)). A Direct Lake model reads the lakehouse as the signed-in user, so non-members need Read and ReadAll on it. Contributors already have both ([Direct Lake security](https://learn.microsoft.com/fabric/fundamentals/direct-lake-security-integration#permission-requirements)).
+1. **RLS that holds, plus a test user:** a second account that is **not** a member of the workspace. RLS doesn't restrict workspace Admins, Members or Contributors ([Row-level security](https://learn.microsoft.com/fabric/security/service-admin-row-level-security)).
+   - Bind `REF_Sales_Model` to a cloud connection that uses the workspace identity, and share `LH_ContosoPharma` with that identity only. Steps and screenshots: [governance – RLS that holds](../governance/README.md#rls-that-holds-fixed-identity). Without this, **Test as role** says *Not supported* (SSO), and readers need ReadAll on the lakehouse, which lets them bypass RLS in OneLake.
+   - Add the test user to the `DACH` role of `REF_Sales_Model` (**…** > **Security**).
+   - Share `REF_Sales_Report` (**Manage permissions** > **Direct access** > **Add user**, with *build content*) and `REF_Sales_Agent` (no extra permission) with the test user. Don't give the test user a workspace role or lakehouse access.
+   - Check it: **…** > **Security** > **…** next to `DACH` > **Test as role** shows *Now viewing as: DACH*.
 2. **Sensitivity label:** pick the label that participants should apply (for example *Confidential*). Confirm that participants can see it.
-3. **Purview:** an account with access to Microsoft Purview Audit and DSPM. Complete the DSPM setup tasks **Activate Microsoft Purview Audit** and **Secure interactions in Microsoft Copilot experiences** ([Data agent audit logging](https://learn.microsoft.com/fabric/data-science/data-agent-purview-governance)). Managing Copilot in Fabric and data agent interactions in Purview also requires **pay-as-you-go billing** for Purview in your organization ([Purview for Copilot in Fabric](https://learn.microsoft.com/purview/ai-copilot-fabric)).
-4. **DLP policy (optional):** in the Microsoft Purview portal, create a DLP policy for Fabric and Power BI. Scope it to the workshop workspace, use the lab's sensitivity label as the condition and a policy tip as the action. Show the tip on the lakehouse: policies evaluate a lakehouse when its data changes, so create the policy first, then reload one table (step 4.5) and check the tip on `LH_ContosoPharma` ([Get started with DLP for Fabric and Power BI](https://learn.microsoft.com/purview/dlp-powerbi-get-started)).
+3. **Purview (DSPM and audit):** an account with access to Microsoft Purview Audit and DSPM. Complete the DSPM setup tasks and pay-as-you-go billing, and optionally connect DSPM to Fabric for data risk assessments ([purview-demo.md – prerequisites](../governance/purview-demo.md#prerequisites-for-dspm)).
+4. **DLP policy and demo data:** create the folder `GOV` with the lakehouse `LH_Customer_Finance` and its synthetic IBAN table, then run [create-dlp-policy.ps1](../governance/scripts/create-dlp-policy.ps1). Do it at least an hour before the demo, then reload the table once so that DLP evaluates it ([purview-demo.md – seed and policy](../governance/purview-demo.md#seed-the-demo-data)).
 5. **Sharing between participants:** every participant is a Contributor in the workspace, so the data agent share options (**View details**, **Edit and view details**) don't restrict them from each other. The options apply to people without a workspace role. Show the real effect with the test user from item 1.
 
 ## 7. During the session
@@ -106,7 +110,9 @@ See [governance/README.md](../governance/README.md) for the full list. At minimu
 ## 8. Clean up
 
 1. Delete the items in the participant folders, then the folders. A folder can only be deleted when it's empty.
-2. Delete the workspace when you no longer need it.
+2. Remove the DLP policy and the `GOV` folder ([purview-demo.md – clean up](../governance/purview-demo.md#clean-up-after-the-workshop)). Remove the test user from the `DACH` role and from the report, agent and model permissions. Delete the cloud connection in **Manage connections and gateways**.
+3. Delete the workspace when you no longer need it.
+4. Pause the Fabric capacity in the Azure portal when the workshop is over. A paused capacity stops billing; nothing in the workspace runs until you resume it ([Pause and resume your capacity](https://learn.microsoft.com/fabric/enterprise/pause-resume)).
 
 ## Features used and their status
 
