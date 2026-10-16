@@ -5,7 +5,7 @@ A 15-minute instructor demo that shows how Microsoft Purview protects the data b
 | Part | What the audience sees | Minutes |
 | --- | --- | ---: |
 | [1. DLP finds bank data in a lakehouse](#1-dlp-finds-bank-data-in-a-lakehouse) | A policy tip on a Fabric lakehouse, the policy behind it, the alert | 5 |
-| [2. DSPM shows what people ask the AI](#2-dspm-shows-what-people-ask-the-ai) | Copilot and data agent prompts and responses, including one with an IBAN | 5 |
+| [2. DSPM shows what people ask the AI](#2-dspm-shows-what-people-ask-the-ai) | Data agent conversations on their own, then Copilot answers flagged for medical terms | 5 |
 | [3. DSPM data risk assessment for Fabric](#3-dspm-data-risk-assessment-for-fabric) | Oversharing of sensitive Fabric items | 3 |
 | [4. Audit](#4-audit) | The same interactions as audit records | 2 |
 
@@ -16,7 +16,8 @@ A 15-minute instructor demo that shows how Microsoft Purview protects the data b
 | Folder `GOV` with lakehouse `LH_Customer_Finance` and table `customer_bank_accounts` | [Seed the demo data](#seed-the-demo-data) | 1 hour (DLP evaluation) |
 | DLP policy *Workshop - Fabric customer bank data* | [scripts/create-dlp-policy.ps1](scripts/create-dlp-policy.ps1) | 1 hour |
 | DSPM setup tasks done, pay-as-you-go billing on | [Prerequisites for DSPM](#prerequisites-for-dspm) | Once per tenant |
-| A few Copilot and data agent conversations | Run Lab 1 and Lab 2 once (dry run) | 1 hour (audit pipeline) |
+| A few Copilot and data agent conversations | Run Lab 1 and Lab 2 once (dry run). Ask the data agent at least once in Fabric and once through MCP | The day before (audit pipeline) |
+| Your account can read prompts and responses | Purview role group **Data Security AI Content Viewers** | 1 hour |
 | Fabric connection for data risk assessments | [Connect DSPM to Fabric](#connect-dspm-to-fabric-for-data-risk-assessments) | 4 days for the first default assessment, up to 48 hours for a custom one |
 
 All data is synthetic. The IBANs in `customer_bank_accounts` have valid check digits, so Purview recognizes them, but they don't belong to real accounts ([generate_governance_demo_data.py](../scripts/generate_governance_demo_data.py)).
@@ -46,11 +47,25 @@ The policy covers only the workshop workspace. Its rule matches the sensitive in
 
 ## Prerequisites for DSPM
 
-All four are tenant-wide and are done once ([Data agent audit](https://learn.microsoft.com/fabric/data-science/data-agent-purview-governance), [Purview for Copilot in Fabric](https://learn.microsoft.com/purview/ai-copilot-fabric)):
+All of these are tenant-wide and are done once ([Data agent audit](https://learn.microsoft.com/fabric/data-science/data-agent-purview-governance), [Purview for Copilot in Fabric](https://learn.microsoft.com/purview/ai-copilot-fabric)):
 
-1. Purview portal > **DSPM** > **Tasks and actions** > **Setup tasks**: complete **Activate Microsoft Purview Audit** and **Secure interactions in Microsoft Copilot experiences**.
-2. Same page: **Set up pay-as-you-go billing for data storage**. Managing Copilot in Fabric and data agent interactions requires pay-as-you-go billing.
+1. Purview portal > **DSPM** > **Tasks and actions** > **Setup tasks**: complete **Activate Microsoft Purview Audit** and **Secure interactions in Microsoft Copilot experiences**. The second one creates the collection policy *DSPM for AI - Capture interactions for Copilot experiences*, which captures the prompts and responses of Copilot in Fabric and data agents.
+2. Pay-as-you-go billing: Purview portal > **Settings** > **Account** shows the linked Azure subscription and *You've successfully consented to the new Purview Business Model*. Managing Copilot in Fabric and data agent interactions requires it ([Enable pay-as-you-go](https://learn.microsoft.com/purview/purview-payg-subscription-based-enablement)).
 3. Fabric admin portal > **Tenant settings**: **Allow Microsoft Purview to secure AI interactions** is on (the default).
+4. Add the presenter to the role group **Data Security AI Content Viewers** (Purview portal > **Settings** > **Roles and scopes** > **Role groups**), so the prompt and response text is visible.
+
+**Check it in the tenant** (PowerShell, read-only):
+
+```powershell
+Connect-IPPSSession -UserPrincipalName admin@contoso.onmicrosoft.com
+Get-FeatureConfiguration -FeatureScenario KnowYourData | Format-Table Name, Mode, Enabled
+Connect-ExchangeOnline -UserPrincipalName admin@contoso.onmicrosoft.com
+Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) -RecordType CopilotInteraction -ResultSize 1000 |
+  ForEach-Object { ($_.AuditData | ConvertFrom-Json) } |
+  Group-Object AppIdentity, AgentName | Format-Table Count, Name
+```
+
+Data agent records have **AppIdentity** `Copilot.Fabric.DataAgent` and **AgentName** `DataAgent`. Copilot in Power BI records have `Copilot.Fabric.CopilotForPowerBI` ([Audit logs for Copilot and AI applications](https://learn.microsoft.com/purview/audit-copilot)).
 
 ![DSPM setup tasks: Secure interactions in Microsoft Copilot experiences completed](../docs/images/ui/gov-01-dspm-setup-tasks.png)
 
@@ -97,17 +112,41 @@ The page then shows *You have set up connection for Fabric*. The default assessm
 
 ## 2. DSPM shows what people ask the AI
 
+Activity explorer shows Copilot and data agent conversations in one list. Use the **Agents involved** filter to show data agents only.
+
 1. Purview portal > **DSPM** > **Discover** > **Activity explorer** > **AI activities** tab.
 
    ![Activity explorer, AI activities: AI Interaction and Sensitive info types events by day](../docs/images/ui/gov-08-dspm-ai-activities.png)
 
-2. Filter **App** = *Copilot in Fabric*. Open an **AI Interaction** row to show the prompt and the response. Open a **Sensitive info types** row: it was raised by the prompt *"Berlin Teaching Hospital pays from IBAN DE19… What were its net sales in 2025?"* sent to `REF_Sales_Agent` during the dry run.
+2. **Data agents only:** set **Timestamp** to cover your dry run, then **Agents involved** = **DataAgent** > **Apply**.
+
+   ![Activity explorer filtered to Agents involved: DataAgent](../docs/images/ui/gov-16-dspm-dataagent-filter.png)
+
+3. Open a row. A data agent record shows **App** = *Copilot in Fabric*, **Agent name** = *DataAgent*, **App accessed in** = where it was used (*MCP* for VS Code and other MCP clients), and under **Resources AI app accessed** the agent, its workspace and its sources.
+
+   ![A data agent record: Agent name DataAgent, accessed in MCP, with the resources it used](../docs/images/ui/gov-17-dspm-dataagent-record.png)
+
+4. **Copilot only, for comparison:** change the filter to **Agents involved** = *PowerBICopilot* (Copilot in Power BI). Open a **Sensitive info types** row. In the workshop tenant it lists **Diseases** and **All Medical Terms And Conditions**: DSPM classified the Copilot answer about therapeutic areas (for example *Infectious Diseases*). Good talking point for a pharma audience: medical terms in AI answers are detected without any configuration.
 
    ![Activity details: Sensitive info types, app Copilot in Fabric, accessed in Power BI](../docs/images/ui/gov-09-dspm-ai-activity-detail.png)
 
+| To show | Filter | Values seen in the workshop tenant |
+| --- | --- | --- |
+| Data agents only | **Agents involved** | *DataAgent* |
+| Copilot in Power BI only | **Agents involved** | *PowerBICopilot* |
+| Copilot in Fabric (Fabric AI Hub) | **Agents involved** | *PowerBIMCPServer* |
+| Where a data agent was used | **App accessed in** | *MCP* (VS Code, other MCP clients) |
+| Microsoft 365 Copilot Chat | **App** | *M365Copilot - Bizchat* |
+
+The Microsoft Learn example shows **App** = *Fabric - DataAgent* and **App accessed in** = *DataScience* or *M365* for data agents ([Data agent audit](https://learn.microsoft.com/fabric/data-science/data-agent-purview-governance)). In the workshop tenant, records showed **App** = *Copilot in Fabric* instead. Filter on **Agents involved** = *DataAgent*: it works in both cases.
+
+**To see the prompt and the response text:** your account needs the Purview role group **Data Security AI Content Viewers** or **Content Explorer Content Viewer**. Without it, a record shows *Permissions needed to view prompts and responses*. Role changes can take up to an hour ([Considerations for DSPM – activity explorer events](https://learn.microsoft.com/purview/data-security-posture-management-considerations#activity-explorer-events-in-data-security-posture-management)).
+
+**Timing and a known gap (preview):** prepare this the day before. In the workshop tenant, data agent records appeared for questions asked through MCP on 5–7 October 2026 (the 20 records in the screenshot). Questions asked to `REF_Sales_Agent` on 13–14 October, through MCP and in the Fabric chat (draft and published), had not produced any record a day later, while Copilot in Power BI records kept arriving. The same tenant settings, capacity and user were used. Check that your own dry-run questions appear before you rely on them; if they don't, show the existing records and say that data agent capture is in preview. The Activity explorer default range is the last day; widen **Timestamp** to include your dry run.
+
 **Say:**
 - Prompts and responses of Copilot for Power BI are captured (generally available). Data agents and other Copilot experiences in Fabric are in preview ([Purview for Copilot in Fabric](https://learn.microsoft.com/purview/ai-copilot-fabric)).
-- Only what the user sees is captured. The agent's internal steps and backend queries aren't ([Data agent audit](https://learn.microsoft.com/fabric/data-science/data-agent-purview-governance)).
+- Only what the user sees is captured: the prompt and the response, including generated queries returned to the user. The agent's internal steps and backend queries aren't ([Data agent audit](https://learn.microsoft.com/fabric/data-science/data-agent-purview-governance)).
 - DLP doesn't act on the AI conversation itself in Copilot in Fabric. It protects the data sources, as in part 1 ([Purview for Copilot in Fabric](https://learn.microsoft.com/purview/ai-copilot-fabric)).
 
 ## 3. DSPM data risk assessment for Fabric
@@ -122,15 +161,17 @@ Scanned item types include lakehouses, warehouses, SQL analytics endpoints, repo
 
 ## 4. Audit
 
-Purview portal > **Audit** > search the last 24 hours. Use these **Activities - operation names** ([Operation list](https://learn.microsoft.com/fabric/admin/operation-list)):
+Purview portal > **Audit** > search the last 7 days. Use these **Activities - operation names** ([Operation list](https://learn.microsoft.com/fabric/admin/operation-list), [Audit logs for Copilot and AI applications](https://learn.microsoft.com/purview/audit-copilot)):
 
 | Operation | Created by |
 | --- | --- |
-| `CopilotInteraction` | Every Copilot and data agent prompt and response |
+| `CopilotInteraction` | Every Copilot and data agent prompt and response. Tell them apart by the **AppIdentity** in the record: `Copilot.Fabric.DataAgent` or `Copilot.Fabric.CopilotForPowerBI` |
+| `QueryAISkillDeploymentEndpoint` | A question to the **published** data agent (Fabric chat, MCP, other channels). Seen in the workshop tenant; not on the Learn operation list |
+| `QueryAISkillDevelopmentEndpoint` | Work in the agent's **draft** (test chat, configuration). Seen in the workshop tenant |
 | `ApplyChangeToPowerBIModel` | Lab 1 model edits in the browser |
 | `SensitivityLabelApplied` | Lab 1 step 9 |
 
-Audit records can take up to an hour to appear. Use the records from your dry run.
+Microsoft documents filtering on **AppIdentity** offline: export the `CopilotInteraction` results and filter the export ([Audit logs for Copilot and AI applications – accessing Copilot audit logs](https://learn.microsoft.com/purview/audit-copilot#accessing-copilot-audit-logs)). Audit records can take hours to appear. Use the records from your dry run.
 
 ## Clean up after the workshop
 
@@ -139,4 +180,4 @@ Connect-IPPSSession -UserPrincipalName admin@contoso.onmicrosoft.com
 Remove-DlpCompliancePolicy -Identity "Workshop - Fabric customer bank data"
 ```
 
-Then delete the folder `GOV` with the lakehouse. If you created the app registration and security group only for this demo, delete them and remove the group from the two Fabric admin API settings.
+Then delete the folder `GOV` with the lakehouse. If you created the app registration and security group only for this demo, delete them and remove the group from the two Fabric admin API settings. Remove the presenter from **Data Security AI Content Viewers** if they don't need it after the workshop.

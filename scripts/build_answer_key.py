@@ -51,7 +51,7 @@ def main():
     inventory = read("inventory_weekly.csv")
     complaints = read("quality_complaints.csv")
 
-    net_by_year, units_by_year = defaultdict(float), defaultdict(int)
+    net_by_year = defaultdict(float)
     gross_by_year, disc_by_year = defaultdict(float), defaultdict(float)
     ta_2025, ta_year = defaultdict(float), defaultdict(float)
     country_2026, channel_disc = defaultdict(float), defaultdict(lambda: [0.0, 0.0])
@@ -61,7 +61,6 @@ def main():
         year, ym = s["order_date"][:4], s["order_date"][:7]
         net, gross, disc = float(s["net_sales_eur"]), float(s["gross_sales_eur"]), float(s["discount_eur"])
         net_by_year[year] += net
-        units_by_year[year] += int(s["units"])
         gross_by_year[year] += gross
         disc_by_year[year] += disc
         ta_year[(p["therapeutic_area"], year)] += net
@@ -95,7 +94,6 @@ def main():
         {"check": "Net Sales, year 2025", "expected": eur_m(net_by_year["2025"]), "exact": f"{net_by_year['2025']:.2f}"},
         {"check": "Net Sales, year 2024", "expected": eur_m(net_by_year["2024"]), "exact": f"{net_by_year['2024']:.2f}"},
         {"check": "Net Sales YoY %, year 2025", "expected": f"{yoy_2025:.1%}", "exact": f"{yoy_2025:.6f}"},
-        {"check": "Units, year 2025", "expected": f"{units_by_year['2025']:,}", "exact": str(units_by_year["2025"])},
         {"check": "Discount %, year 2025", "expected": f"{disc_by_year['2025'] / gross_by_year['2025']:.1%}",
          "exact": f"{disc_by_year['2025'] / gross_by_year['2025']:.6f}"},
         {"check": "Net Sales, Germany + Zentora 100 mg tablets, May 2026", "expected": eur_k(de_zentora["2026-05"]),

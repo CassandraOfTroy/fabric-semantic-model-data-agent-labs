@@ -2,23 +2,27 @@
 
 Copy and paste each prompt. Always review what Copilot proposes before you accept it: AI output can be wrong.
 
-## Step 4 – Copilot in DAX query view
+## Step 4 – KPIs with Copilot
 
-Open a new query tab, press **Ctrl+I** (or select **Copilot**), and enter:
+In the model editor (**Editing** mode), select **Copilot** on the ribbon. On the first prompt, Copilot asks *Allow Copilot to make changes during this chat session?* Select **Allow**. Copilot then saves a restore checkpoint in version history ([Copilot in web modeling](https://learn.microsoft.com/power-bi/transform-model/copilot-web-modeling)).
 
-```text
-Write a measure called Net Sales YoY % that returns the year-over-year percentage change of [Net Sales] compared with [Net Sales PY]. Show it by year.
-```
+**4b-1. Discount %**
 
 ```text
-Write a measure called Net Sales YTD that uses TOTALYTD and the 'Date'[date] column. Show it by month for 2026.
+Create a measure Discount % in the Sales table: discounts as a share of gross sales, DIVIDE ( SUM ( Sales[discount_eur] ), SUM ( Sales[gross_sales_eur] ) ). Format it as a percentage with one decimal, put it in the display folder KPIs, and add a short description.
 ```
 
-Select **Run** to check the result, then **Keep query**. Compare the result with the reference answers at the end of [measures.dax](measures.dax). Source: [Write DAX queries with Copilot](https://learn.microsoft.com/dax/dax-copilot).
+**4b-2. Net Sales YoY %**
 
-## Step 5 – Copilot in web modeling (preview)
+```text
+Create a measure Net Sales YoY % in the Sales table that shows how much Net Sales grew compared with the same period last year. Use the Date table. Format it as a percentage with one decimal, put it in the display folder KPIs, and add a short description.
+```
 
-Open the model in **Editing mode** and select **Copilot** on the ribbon. When Copilot asks for permission to change the model, accept. Copilot then saves a restore point in version history ([Copilot in web modeling](https://learn.microsoft.com/power-bi/transform-model/copilot-web-modeling)).
+Compare Copilot's DAX with [kpi-definitions.md](kpi-definitions.md). **Net Sales** (step 4a) you create by hand.
+
+## Step 5 – Clean up with Copilot
+
+Keep the Copilot pane open. Send one prompt at a time, and check the **Data** pane before you send the next.
 
 **5a. Review (no changes)**
 
@@ -26,7 +30,7 @@ Open the model in **Editing mode** and select **Copilot** on the ribbon. When Co
 Review my semantic model against Power BI modeling best practices. List the issues by priority. Don't change anything yet.
 ```
 
-**5b. Business-friendly names.** Use this exact mapping, so that everyone's model looks the same:
+**5b. Business-friendly names.** Use this exact mapping, so that everyone's model looks the same. If Copilot lists the renames and asks you to confirm, reply `yes`. The KPI formulas from step 4 update to the new column names automatically.
 
 ```text
 Rename the columns exactly as listed. Don't change anything else.
@@ -47,22 +51,13 @@ Make these changes:
 5. Set Summarize by to None for Year and Month Number.
 ```
 
-**5d. Formats and display folders**
-
-```text
-Format Net Sales, Gross Sales, Discount Amount, Net Sales PY and Net Sales YTD as currency in EUR with no decimals.
-Format Discount % and Net Sales YoY % as a percentage with one decimal.
-Format Units Sold and Active Customers as whole numbers with a thousands separator. Format Net Price per Unit as EUR with two decimals.
-Put the measures in display folders: Sales (Net Sales, Gross Sales, Discount Amount, Discount %), Time intelligence (Net Sales PY, Net Sales YoY %, Net Sales YTD), Volume and price (Units Sold, Net Price per Unit, Active Customers).
-```
-
-**5e. Descriptions** (Copilot reads only the first 200 characters of a description – [Optimize your model for Copilot](https://learn.microsoft.com/power-bi/create-reports/copilot-evaluate-data))
+**5d. Descriptions** (Copilot reads only the first 200 characters of a description – [Optimize your model for Copilot](https://learn.microsoft.com/power-bi/create-reports/copilot-evaluate-data))
 
 ```text
 Write a short business description, under 150 characters, for each table and for each visible column. Apply them.
 ```
 
-For a single measure, you can also select the measure, then **Create with Copilot** under **Description**, then **Keep it** ([Measure descriptions with Copilot](https://learn.microsoft.com/power-bi/transform-model/desktop-measure-copilot-descriptions)).
+The KPIs already have descriptions from step 4. To redo one measure's description, select the measure, then **Create with Copilot** under **Description**, then **Keep it** ([Measure descriptions with Copilot](https://learn.microsoft.com/power-bi/transform-model/desktop-measure-copilot-descriptions)).
 
 ## Step 7 – Copilot in the report
 

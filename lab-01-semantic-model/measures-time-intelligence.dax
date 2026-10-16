@@ -1,4 +1,5 @@
-// Lab 1, step 4 fallback, if Copilot isn't available: adds the two time-intelligence measures.
+// Lab 1, step 4, the manual way: adds the two time-intelligence measures. Run measures.dax first:
+// Net Sales YoY % uses its measures Net Sales and Net Sales PY. Run it before step 5 (original column names).
 // Paste into a new DAX query view tab, select Run, then "Update model with changes".
 // Expected: Net Sales YoY % for 2025 = 10.0 %
 

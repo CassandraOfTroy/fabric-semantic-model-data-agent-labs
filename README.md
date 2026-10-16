@@ -22,12 +22,12 @@ Follow the [instructor setup](setup/README.md) at least one day before the sessi
 | | Lab 1 · Semantic model | Lab 2 · Data agent |
 | --- | --- | --- |
 | **You build** | A semantic model on the shared lakehouse (Direct Lake) and a report with AI visuals | A data agent on your model plus 2 lakehouse tables |
-| **AI used** | Copilot in DAX query view, web modeling and reports | Build agent with AI, answers as charts |
+| **AI used** | Copilot in web modeling (KPIs, clean-up) and in reports, AI visuals | Build agent with AI, answers as charts |
 | **Roles** | Model and report author | Developer and business user |
 | **Time** | 120 minutes | 120 minutes |
 | **Guide** | **[Open Lab 1 →](lab-01-semantic-model/README.md)** | **[Open Lab 2 →](lab-02-data-agent/README.md)** |
 
-![Use case 1: the semantic model P07_Sales_Model reads the shared lakehouse tables directly (Direct Lake) and feeds the report P07_Sales_Report. Lab steps 1 to 9 are shown under each stage. Copilot helps at step 4 (DAX query view), step 5 (web modeling, preview), step 7 (report pages) and step 8 (narrative).](docs/images/use-case-1-semantic-model.png)
+![Use case 1: the semantic model P07_Sales_Model reads the shared lakehouse tables directly (Direct Lake) and feeds the report P07_Sales_Report. Lab steps 1 to 9 are shown under each stage. Copilot helps at step 4 (business KPIs, preview), step 5 (model clean-up, preview), step 7 (report pages) and step 8 (narrative).](docs/images/use-case-1-semantic-model.png)
 
 ![Use case 2: the developer configures and publishes the data agent P07_Sales_Agent, the business user asks it questions and sends feedback. The agent queries P07_Sales_Model with DAX and two lakehouse tables with SQL. People use it in Fabric, Microsoft 365 Copilot and Teams (preview), Copilot Studio and VS Code through MCP.](docs/images/use-case-2-data-agent.png)
 
@@ -42,7 +42,7 @@ All data is synthetic and all names are fictional. Column descriptions are in th
 
 | Folder | Contents |
 | --- | --- |
-| [lab-01-semantic-model](lab-01-semantic-model/) | Lab 1 guide, DAX files, Copilot prompts, AI instructions, best-practice checklist |
+| [lab-01-semantic-model](lab-01-semantic-model/) | Lab 1 guide, KPI definitions, DAX files, Copilot prompts, AI instructions, best-practice checklist |
 | [lab-02-data-agent](lab-02-data-agent/) | Lab 2 guides (developer, business user), agent configuration, test sheets, MCP setup, evaluation notebook, gap matrix |
 | [governance](governance/) | Row-level security, sensitivity labels, DLP, audit, DSPM for AI, and a 10-minute demo script |
 | [setup](setup/) | Instructor setup guide, plus an optional notebook that loads the lakehouse from CSV |

@@ -2,19 +2,43 @@
 
 **Time:** 120 minutes · **Level:** beginner · **Tools:** browser only
 
-You build a star-schema semantic model on the shared lakehouse, entirely in the Fabric portal. Copilot helps at every step. Then you create a report and use Power BI's AI visuals to find why sales dropped.
+## The story
 
-The model uses **Direct Lake**: it reads the lakehouse tables in place, with no copy. Everyone builds their own model on the same data.
+Contoso Pharma (fictional) sells prescription medicines to hospitals, clinics, pharmacies and wholesalers in 14 European countries. Today every analyst calculates "sales" a little differently, in their own Excel file. Your task: build **one semantic model** that the commercial team, and every AI tool, uses to answer these questions.
+
+| Business question | Answered with | Step | Answer |
+| --- | --- | --- | --- |
+| How much do we sell, and are we growing? | KPIs **Net Sales** and **Net Sales YoY %** | 4, 7 | €293.8 M in 2025, +10.0 % on 2024 |
+| Which therapeutic areas and countries drive sales? | Bar charts, decomposition tree | 7, 8 | Oncology (€103.4 M) and Germany (€52.6 M) in 2025 |
+| Where do we give the most discount? | KPI **Discount %**, key influencers | 4, 8 | 10.4 % in 2025; hospital tenders 20 % |
+| Did anything unusual happen? | Anomaly detection | 8 | Zentora 100 mg tablets in Germany: €660 k in April 2026, €167 k in May |
+| What comes next? | Forecast | 8 | Viraquel, next 6 months |
+
+**What you build**
+
+1. `P07_Sales_Model`: a star-schema semantic model on the shared lakehouse, with three business KPIs, business names and descriptions.
+2. `P07_Sales_Report`: an overview page, and a page with AI visuals: anomaly detection, forecast, key influencers and decomposition tree.
+3. Security and governance on the model: row-level security, a sensitivity label, endorsement.
+
+**Why you also make the model AI-ready (step 6)**
+
+Copilot in Power BI, Microsoft 365 Copilot and Fabric data agents don't read your report. They read the semantic model and write DAX queries against it. They know only what the model tells them: names, descriptions, which fields to use, your business terms and approved answers ([Copilot in Power BI and Fabric](https://learn.microsoft.com/fabric/iq/connectors/copilot-power-bi-fabric), [Prepare your data for AI](https://learn.microsoft.com/power-bi/create-reports/copilot-prepare-data-ai)).
+
+One question stays open at the end of this lab: *why* did Zentora sales drop in May 2026? The cause, a stock-out after quality complaints, is in two lakehouse tables that aren't in the model. In [Lab 2](../lab-02-data-agent/README.md) you build a data agent that combines this model with those tables. When the agent queries the model, it uses the model's Prep data for AI settings, not the agent's own instructions ([Semantic model best practices for data agent](https://learn.microsoft.com/fabric/data-science/semantic-model-best-practices)).
+
+## How you build it
+
+The model uses **Direct Lake**: it reads the lakehouse tables in place, with no copy. Everyone builds their own model on the same data, in the Fabric portal.
 
 ![Lab 1 flow: shared lakehouse, Direct Lake, semantic model P07_Sales_Model, report P07_Sales_Report. Lab steps 1 to 9 under each stage. Copilot helps at steps 4, 5, 7 and 8.](../docs/images/use-case-1-semantic-model.png)
 
 | Step | What you do | Min |
 | --- | --- | ---: |
-| 0 | Welcome, your ID, naming rules | 10 |
+| 0 | Welcome, the story, your ID, naming rules | 10 |
 | [1](#step-1--explore-the-data) | Explore the data | 5 |
-| [2](#step-2--create-the-semantic-model) | Create the semantic model | 15 |
+| [2](#step-2--create-the-semantic-model) | Create the semantic model from the lakehouse | 10 |
 | [3](#step-3--tables-relationships-and-date-table) | Tables, relationships and date table | 10 |
-| [4](#step-4--measures-with-dax-query-view-and-copilot) | Measures with DAX query view and Copilot | 15 |
+| [4](#step-4--add-the-business-kpis-to-the-model) | Add the business KPIs: by hand and with Copilot | 20 |
 | [5](#step-5--clean-up-the-model-with-copilot) | Clean up the model with Copilot | 10 |
 | [6](#step-6--prep-data-for-ai) | Prep data for AI | 10 |
 | [7](#step-7--create-the-report-by-hand-then-with-copilot) | Create the report by hand, then with Copilot; add a verified answer | 15 |
@@ -28,7 +52,7 @@ The model uses **Direct Lake**: it reads the lakehouse tables in place, with no 
 - You're a Contributor in the workspace **ContosoPharma_Workshop**. Its folder **00_Shared** holds the shared lakehouse **LH_ContosoPharma** that everyone builds on.
 - You have read the [naming rules](../docs/naming-and-etiquette.md).
 
-Files used in this lab: [measures.dax](measures.dax) · [measures-time-intelligence.dax](measures-time-intelligence.dax) (fallback) · [copilot-prompts.md](copilot-prompts.md) · [ai-instructions.md](ai-instructions.md) · [expected-values.csv](expected-values.csv) · [best-practices-checklist.md](best-practices-checklist.md)
+Files used in this lab: [kpi-definitions.md](kpi-definitions.md) · [measures.dax](measures.dax) and [measures-time-intelligence.dax](measures-time-intelligence.dax) (optional, step 4) · [copilot-prompts.md](copilot-prompts.md) · [ai-instructions.md](ai-instructions.md) · [expected-values.csv](expected-values.csv) · [best-practices-checklist.md](best-practices-checklist.md)
 
 ---
 
@@ -51,32 +75,52 @@ Files used in this lab: [measures.dax](measures.dax) · [measures-time-intellige
 
 ## Step 2 – Create the semantic model
 
-1. In the workspace, open your folder **P07**.
-2. Select **+ New item** > **All items**, type **Semantic model** in the filter and select the tile **Semantic model**.
+You're still in the lakehouse from step 1.
+
+1. On the lakehouse **Home** ribbon, select **New semantic model**.
+
+   ![Lakehouse Home ribbon with New semantic model highlighted](../docs/images/ui/lab1-03a-lakehouse-ribbon.png)
+
+2. In **New semantic model**:
+   1. **Direct Lake semantic model name:** enter `P07_Sales_Model`.
+   2. **Workspace:** keep **ContosoPharma_Workshop**.
+   3. Select the tables `dim_customer`, `dim_date`, `dim_product` and `fact_sales`. Leave `inventory_weekly` and `quality_complaints` unselected: they're for Lab 2.
+   4. Select **Confirm**.
+
+   ![New semantic model: the name (here P02_Sales_Model), the workspace ContosoPharma_Workshop and the four tables selected](../docs/images/ui/lab1-04a-lakehouse-new-semantic-model.png)
+
+3. After about a minute, the model opens in the web model editor, in the same browser tab.
+4. The model is saved in the workspace root, not in your folder. Move it: in the left navigation, select **ContosoPharma_Workshop**. Select **…** next to `P07_Sales_Model` > **Move to** > **P07** > **Move here**.
+5. Open the folder **P07** and select **…** next to `P07_Sales_Model` > **Open semantic model**.
+
+✅ **Check:** in the model, select the `fact_sales` table. In **Properties** > **Advanced**, **Storage mode** is **Direct Lake**.
+
+<details>
+<summary>Other way in: <b>+ New item</b> in your folder</summary>
+
+1. In your folder **P07**, select **+ New item** > **All items**, type **Semantic model** in the filter and select the tile **Semantic model**.
 
    ![New item panel filtered to Semantic model](../docs/images/ui/lab1-03-new-item-semantic-model.png)
 
-3. On **Add data to start building a report**, select **OneLake catalog**. Search for `ContosoPharma`, select **LH_ContosoPharma**, then select **Connect**. Don't select `LH_Customer_Finance`: it belongs to the trainer's DLP demo.
+2. On **Add data to start building a report**, select **OneLake catalog**. Search for `ContosoPharma`, select **LH_ContosoPharma**, then select **Connect**. Don't select `LH_Customer_Finance`: it belongs to the trainer's DLP demo.
 
    ![OneLake catalog with the lakehouse LH_ContosoPharma](../docs/images/ui/lab1-04-onelake-catalog.png)
 
-4. In **Choose tables from OneLake**, enter `P07_Sales_Model` as **Direct Lake semantic model name**. Check that **Workspace** is **ContosoPharma_Workshop**.
-5. Select the tables `dim_customer`, `dim_date`, `dim_product` and `fact_sales`. Leave `inventory_weekly` and `quality_complaints` unselected. Select **Confirm**.
+3. In **Choose tables from OneLake**, enter the name, select the same four tables and select **Confirm**. If the model doesn't open after about 30 seconds, allow pop-ups for the Fabric portal.
 
    ![Choose tables from OneLake with the model name, the workspace and the four tables selected](../docs/images/ui/lab1-05-new-semantic-model-dialog.png)
 
-6. The model opens in the web model editor after about 30 seconds. If nothing opens, allow pop-ups for the Fabric portal and try again.
-7. The new model is saved in the workspace root, not in your folder. In the workspace, select **…** next to `P07_Sales_Model` > **Move to** > **P07** > **Move here**.
+This way also saves the model in the workspace root: move it to your folder as in step 2.4. Both ways create the same Direct Lake model.
 
-✅ **Check:** select the `fact_sales` table. In **Properties** > **Advanced**, **Storage mode** is **Direct Lake**.
+</details>
 
 > **Why Direct Lake:** the model reads the Delta tables in OneLake directly. It doesn't copy the data, and it doesn't need a scheduled refresh: changes in the lakehouse appear in the model automatically. Queries run in the same in-memory engine as Import mode, so reports stay fast ([Direct Lake overview](https://learn.microsoft.com/fabric/fundamentals/direct-lake-overview)).
 
-Learn more: [Direct Lake in web modeling](https://learn.microsoft.com/fabric/fundamentals/direct-lake-web-modeling)
+Learn more: [Create a Power BI semantic model in Direct Lake mode](https://learn.microsoft.com/fabric/data-warehouse/create-semantic-model#create-a-new-power-bi-semantic-model-in-direct-lake-mode) · [Direct Lake in web modeling](https://learn.microsoft.com/fabric/fundamentals/direct-lake-web-modeling)
 
 ## Step 3 – Tables, relationships and date table
 
-1. At the top right, select **Viewing** > **Editing** (*Make any changes*). The editor remembers this choice the next time you open the model.
+1. Check the top right of the model editor. If it shows **Viewing**, select it, then **Editing** (*Make any changes*). A model created from the lakehouse ribbon opens in **Editing** already.
    > Changes in the web editor save automatically and can't be undone. Version history keeps the last five versions ([Version history](https://learn.microsoft.com/power-bi/transform-model/service-semantic-model-version-history)).
 2. Rename the tables: select a table in the **Data** pane, then in **Properties** > **General** > **Name**, type the new name and press **Enter**. Each change takes a few seconds to save: wait until the new name shows in the **Data** pane before you rename the next table. If a name doesn't change, enter it again.
 
@@ -126,53 +170,128 @@ Learn more: [Direct Lake in web modeling](https://learn.microsoft.com/fabric/fun
 > | Marked date table | Time intelligence such as prior year and year-to-date needs one row per day without gaps, and every chart uses the same calendar ([Date tables](https://learn.microsoft.com/power-bi/guidance/model-date-tables)) |
 > | Auto date/time off | Otherwise Power BI adds a hidden date table for every date column: a bigger model and inconsistent calendars ([Auto date/time guidance](https://learn.microsoft.com/power-bi/guidance/auto-date-time)) |
 
-## Step 4 – Measures with DAX query view and Copilot
+## Step 4 – Add the business KPIs to the model
 
-1. In a new browser tab, open your folder, select **…** next to `P07_Sales_Model`, then **Open in DAX query view**.
+The model has columns such as `net_sales_eur`, but no business definitions yet. You now add the three KPIs that answer the questions in [the story](#the-story). Each KPI is a **measure**: a named DAX formula that is stored in the model. Every report, Copilot and the Lab 2 data agent then use the same definition, instead of each person adding up columns their own way ([Measures](https://learn.microsoft.com/power-bi/transform-model/desktop-measures), [Create measures in the service](https://learn.microsoft.com/power-bi/transform-model/service-edit-data-models#create-measures)).
 
-   ![DAX query view with Run, Update model with changes and Copilot](../docs/images/ui/lab1-08-dax-query-view.png)
-2. Paste the whole content of [measures.dax](measures.dax) and select **Run**.
-3. Select **Update model with changes**. This adds 8 measures to the **Sales** table. The `///` lines become the measure descriptions ([DAX query view](https://learn.microsoft.com/power-bi/transform-model/dax-query-view)).
-4. **Copilot:** open a new query tab, press **Ctrl+I**, and use the two prompts from [copilot-prompts.md – step 4](copilot-prompts.md#step-4--copilot-in-dax-query-view). Select **Run**, then **Keep query**. Compare the DAX with the reference at the end of `measures.dax`, then select **Update model with changes** ([Write DAX queries with Copilot](https://learn.microsoft.com/dax/dax-copilot)).
+| KPI | Business question | You create it |
+| --- | --- | --- |
+| **Net Sales** | How much do we sell? | 4a, by hand |
+| **Discount %** | How much discount do we give? | 4b, with Copilot |
+| **Net Sales YoY %** | Are we growing? | 4b, with Copilot |
 
-   **No Copilot?** Paste [measures-time-intelligence.dax](measures-time-intelligence.dax) into a new tab, select **Run**, then **Update model with changes**.
+All three go in the table **Sales**, in the display folder **KPIs**. The formulas are in [kpi-definitions.md](kpi-definitions.md).
 
-✅ **Check:** for 2025, **Net Sales** = 293,801,286 and **Net Sales YoY %** = 10.0 %. All expected values are in [expected-values.csv](expected-values.csv).
+**Why in Sales?** Every measure is listed under one table in the **Data** pane: its *home table*. A measure doesn't store data in that table, and it works with every related table: **Net Sales** by **Country** works, although **Country** is in **Customer**. Sales is the natural home here, because the KPIs summarize its columns. You can move a measure later in **Properties** > **Home table** ([Column and measure references](https://learn.microsoft.com/dax/best-practices/dax-column-measure-references#measures)).
 
-> **Best practice:** use explicit measures for every number, and use **DIVIDE** for ratios ([DIVIDE vs /](https://learn.microsoft.com/dax/best-practices/dax-divide-function-operator)).
+### 4a. Net Sales, by hand
 
-## Step 5 – Clean up the model with Copilot
+1. In the **Data** pane, select the table **Sales**.
+2. On the **Home** ribbon, select **New measure**. The formula bar shows `Measure =`.
+3. Replace the text with this formula, then press **Enter**:
 
-*Copilot in web modeling is in preview: it works today, but it can still change before general availability.*
+   ```dax
+   Net Sales = SUM ( Sales[net_sales_eur] )
+   ```
 
-This isn't chatting with your data. Copilot in the model editor changes the model itself: names, hidden fields, sort order, formats, display folders and descriptions ([Copilot in web modeling](https://learn.microsoft.com/power-bi/transform-model/copilot-web-modeling)).
+   ![New measure on the Home ribbon, and the Net Sales formula in the formula bar](../docs/images/ui/lab1-08a-new-measure.png)
 
-1. Go back to the model editor tab and refresh the browser. Switch from **Viewing** to **Editing** (top right). The **Copilot** button is disabled in Viewing mode.
-2. Select **Copilot** on the ribbon. The Copilot pane opens on the right.
-3. Send your first prompt. Copilot asks once per session for permission to change the model: *Allow Copilot to make changes during this chat session?* Select **Allow**. Copilot then saves a restore checkpoint in version history, so you can roll back everything it did in this session.
+4. With **Net Sales** selected, set its **Properties**:
+   1. **Description:** select **Create with Copilot**, read the proposal, then select **Keep it** ([Measure descriptions with Copilot](https://learn.microsoft.com/power-bi/transform-model/desktop-measure-copilot-descriptions)). Without Copilot, type *Net sales in EUR after discounts and rebates.*
+
+      ![Review the measure description from Copilot: Current None, From Copilot with the proposed text, Keep it and Discard](../docs/images/ui/lab1-08b-measure-description-copilot.png)
+
+   2. **Display folder:** type `KPIs` and press **Enter**. The **Data** pane now shows **Sales** > **KPIs** > **Net Sales**.
+   3. **Formatting:** **Format** is already **Currency**. Set **Currency format** to **€ Euro (€ 123)**, then **Decimal places** to `0`. The amounts are in EUR, but the currency symbol that Power BI picks for a new model isn't always €. In our dry run it was £.
+
+      ![Net Sales properties: display folder KPIs, format Currency, 0 decimal places, currency format € Euro (€ 123)](../docs/images/ui/lab1-08c-net-sales-format.png)
+
+### 4b. Discount % and Net Sales YoY %, with Copilot
+
+*Copilot in web modeling is in preview: it works today, but it can still change before general availability* ([Copilot in web modeling](https://learn.microsoft.com/power-bi/transform-model/copilot-web-modeling)).
+
+1. Select **Copilot** on the **Home** ribbon. The Copilot pane opens on the right. The button is disabled in **Viewing** mode.
+2. Paste prompt **4b-1** and send it:
+
+   ```text
+   Create a measure Discount % in the Sales table: discounts as a share of gross sales, DIVIDE ( SUM ( Sales[discount_eur] ), SUM ( Sales[gross_sales_eur] ) ). Format it as a percentage with one decimal, put it in the display folder KPIs, and add a short description.
+   ```
+
+3. Copilot asks once per session: *Allow Copilot to make changes during this chat session?* Select **Allow**. Copilot then saves a restore checkpoint in version history, so you can roll back everything it does in this session.
 
    ![Copilot pane asking: Allow Copilot to make changes during this chat session?](../docs/images/ui/lab1-09-copilot-permission.png)
 
-4. Paste prompts **5a** to **5e** from [copilot-prompts.md](copilot-prompts.md#step-5--copilot-in-web-modeling-preview) one at a time. After each one, read the proposal and check the **Data** pane before you send the next:
+4. When Copilot has finished, paste prompt **4b-2**:
+
+   ```text
+   Create a measure Net Sales YoY % in the Sales table that shows how much Net Sales grew compared with the same period last year. Use the Date table. Format it as a percentage with one decimal, put it in the display folder KPIs, and add a short description.
+   ```
+
+5. Read Copilot's answer: table, DAX, format, display folder and description.
+
+   ![Copilot pane after prompt 4b-2: the DAX of Net Sales YoY %, format 0.0 %, display folder KPIs and a description. The Data pane shows Sales > KPIs with Discount %, Net Sales and Net Sales YoY %](../docs/images/ui/lab1-08d-copilot-kpis.png)
+
+**No Copilot?** Create both measures like **Net Sales** in 4a, with the formulas and formats from [kpi-definitions.md](kpi-definitions.md).
+
+<details>
+<summary>Other way, by hand and all at once: DAX query view</summary>
+
+Instead of 4a and 4b, you can paste DAX scripts that define the measures. Do it before step 5: the scripts use the original column names, such as `net_sales_eur`.
+
+1. At the bottom of the model editor, select **DAX query view**.
+2. Paste the whole content of [measures.dax](measures.dax) and select **Run**. The results show the measures by year.
+3. Select **Update model with changes**. This adds 8 measures to **Sales**, because each definition names its home table: `MEASURE 'Sales'[Net Sales] = …`. The `///` lines above a measure become its description ([DAX query view – update model with changes](https://learn.microsoft.com/power-bi/transform-model/dax-query-view#update-model-with-changes)).
+4. Select **+** to open a new query tab. Paste [measures-time-intelligence.dax](measures-time-intelligence.dax), select **Run**, then **Update model with changes**. This adds **Net Sales YoY %** and **Net Sales YTD**.
+5. Select **Model view**. Put **Net Sales**, **Discount %** and **Net Sales YoY %** in the display folder `KPIs`, and set their formats from [kpi-definitions.md](kpi-definitions.md).
+
+You get the three KPIs and seven more measures: the same set as `REF_Sales_Model`. If a measure with the same name already exists, **Update model with changes** overwrites its formula. The query tabs are discarded when you close the editor; the measures stay in the model.
+
+![DAX query view at the bottom of the model editor, before step 3: Run, Update model with changes, the query tab Query 1 and +](../docs/images/ui/lab1-08-dax-query-view.png)
+
+</details>
+
+✅ **Check:** **Sales** > **KPIs** shows **Discount %**, **Net Sales** and **Net Sales YoY %**. You check their values on the report in step 7.
+
+> **Review what Copilot wrote.** Select **Net Sales YoY %** and read the formula bar. In our run, Copilot compared each period with the same dates one year earlier: `DATEADD ( 'Date'[Date], -1, YEAR )`. On the report in step 7, 2025 shows +10.0 % and 2026 shows −26.8 %: the data ends in September 2026, so nine months of 2026 are compared with all twelve months of 2025. The formula is right, but that comparison isn't like for like. Reviewing AI output means checking results like this one. Step 6 tells AI which period to use by default.
+
+> **Why measures in the model**
+>
+> | Practice | Why |
+> | --- | --- |
+> | An explicit measure for every KPI | One definition for every report, Copilot and data agent ([Star schema – measures](https://learn.microsoft.com/power-bi/guidance/star-schema#measures)) |
+> | **DIVIDE** for ratios | Returns a blank instead of an error when the denominator is 0 ([DIVIDE vs /](https://learn.microsoft.com/dax/best-practices/dax-divide-function-operator)) |
+> | Format and description on the measure | Every visual shows € and % the same way. Report authors and Copilot read the description ([Measure descriptions with Copilot](https://learn.microsoft.com/power-bi/transform-model/desktop-measure-copilot-descriptions)) |
+> | A display folder for the KPIs | Report authors find all KPIs in one place. Some teams put measures in a separate measure-only table instead; both work ([Organize your measures](https://learn.microsoft.com/power-bi/transform-model/desktop-measures#organize-your-measures)) |
+
+## Step 5 – Clean up the model with Copilot
+
+*Copilot in web modeling is in preview.*
+
+This isn't chatting with your data. Copilot in the model editor changes the model itself: names, hidden fields, sort order, data categories and descriptions ([Copilot in web modeling](https://learn.microsoft.com/power-bi/transform-model/copilot-web-modeling)).
+
+1. Keep the **Copilot** pane from step 4 open. If you closed it, check that the top right shows **Editing**, then select **Copilot** on the ribbon.
+2. Paste prompts **5a** to **5d** from [copilot-prompts.md](copilot-prompts.md#step-5--clean-up-with-copilot) one at a time. After each one, read the answer and check the **Data** pane before you send the next:
 
    | Prompt | What it does | Check |
    | --- | --- | --- |
    | 5a Review | Lists issues by priority, changes nothing | A list, nothing changed |
    | 5b Rename | Business names from an exact mapping | Names like **Therapeutic Area** in the Data pane |
-   | 5c Hide and sort | Hides keys and technical columns, sorts months, sets data categories | **Sales** shows only **Channel** and measures |
-   | 5d Format | EUR and % formats, three display folders | Folders **Sales**, **Time intelligence**, **Volume and price** |
-   | 5e Describe | Descriptions under 150 characters | Hover a field to see its description |
+   | 5c Hide and sort | Hides keys and technical columns, sorts months, sets data categories | **Sales** shows only **Channel** and the folder **KPIs** |
+   | 5d Describe | Descriptions under 150 characters for tables and columns | Hover a field to see its description |
 
-✅ **Check:** column names are readable (for example **Therapeutic Area**). The **Sales** table shows only **Channel** and measures in three folders. **Month Name** sorts January to December.
+3. For 5b, Copilot can list the renames first and ask you to confirm. Reply `yes`.
+
+   ![Copilot lists the renames for prompt 5b and asks: Please confirm explicitly that you want me to proceed with these renames (yes/no)](../docs/images/ui/lab1-09b-copilot-confirm.png)
+
+✅ **Check:** column names are readable (for example **Therapeutic Area**). **Sales** shows only **Channel** and the folder **KPIs**. **Month Name** sorts January to December. Select **Net Sales**: the formula now reads `SUM ( Sales[Net Sales EUR] )`. Renaming a column updates the measures that use it. If the formula bar shows a red underline right after the rename, select another field and come back.
 
 ![Copilot review (prompt 5a): missing relationships and the unmarked date table found on a model before step 3](../docs/images/ui/lab1-10-copilot-review.png)
 
 **If Copilot isn't available**, do the same by hand in **Properties** (about 10 minutes). Steps 6–8 need these names:
 
-1. Rename the visible columns with the mapping in [prompt 5b](copilot-prompts.md#step-5--copilot-in-web-modeling-preview): every **Customer**, **Product** and **Date** column, plus `channel` → **Channel** in **Sales**.
+1. Rename the visible columns with the mapping in [prompt 5b](copilot-prompts.md#step-5--clean-up-with-copilot): every **Customer**, **Product** and **Date** column, plus `channel` → **Channel** in **Sales**.
 2. Hide all other **Sales** columns and every key column. Search the **Data** pane for `key`, Ctrl+select the results, and set **Is hidden** to on.
 3. Set **Sort by column** of **Month Name** to **Month Number**.
-4. Format **Net Sales** as currency and **Discount %** as a percentage.
 
 **If something goes wrong:** select **File** > **Version history** and restore the version from before the Copilot session.
 
@@ -180,7 +299,7 @@ This isn't chatting with your data. Copilot in the model editor changes the mode
 
 *Preview.*
 
-**Why it matters:** every AI that answers from this model knows only what the model tells it. Report Copilot and the Lab 2 data agent generate DAX against this model, and Microsoft 365 Copilot grounds its answers in the same semantic models ([Copilot in Power BI and Fabric](https://learn.microsoft.com/fabric/iq/connectors/copilot-power-bi-fabric)). Names and descriptions (step 5) help. Prep data for AI adds what AI can't guess: your terms (GTN, DACH, TA), your default period, which fields to ignore, and approved answers. These settings are used everywhere Copilot in Power BI is available ([Prepare your data for AI](https://learn.microsoft.com/power-bi/create-reports/copilot-prepare-data-ai)), and a data agent's DAX generation uses only these settings, not the agent's own instructions ([Semantic model best practices](https://learn.microsoft.com/fabric/data-science/semantic-model-best-practices)).
+**Why it matters:** as the [story](#the-story) explains, every AI that answers from this model knows only what the model tells it. Names and descriptions (steps 4 and 5) help. Prep data for AI adds what AI can't guess: your terms (GTN, DACH, TA), your default period, which fields to ignore, and approved answers. These settings are used everywhere Copilot in Power BI is available ([Prepare your data for AI](https://learn.microsoft.com/power-bi/create-reports/copilot-prepare-data-ai)), and a data agent's DAX generation uses only these settings, not the agent's own instructions ([Semantic model best practices](https://learn.microsoft.com/fabric/data-science/semantic-model-best-practices)).
 
 > **See the difference:** after step 7, ask the report Copilot pane *What was GTN in DACH last year?* Ask it again after the AI instructions have taken effect. In our dry run, the data agent without these settings answered with a question: which year did "last year" mean?
 
@@ -198,7 +317,7 @@ This isn't chatting with your data. Copilot in the model editor changes the mode
 
    ![Simplify the data schema with the four tables](../docs/images/ui/lab1-13-ai-data-schema.png)
 
-3. On **Add AI instructions**, paste the text from [ai-instructions.md](ai-instructions.md). The counter shows about 1,300 of 10,000 characters ([AI instructions](https://learn.microsoft.com/power-bi/create-reports/copilot-prepare-data-ai-instructions)).
+3. On **Add AI instructions**, paste the text from [ai-instructions.md](ai-instructions.md). The counter shows about 1,350 of 10,000 characters ([AI instructions](https://learn.microsoft.com/power-bi/create-reports/copilot-prepare-data-ai-instructions)).
 
    ![Add AI instructions with the workshop text pasted](../docs/images/ui/lab1-12-ai-instructions.png)
 
@@ -217,7 +336,7 @@ You build the overview page by hand first (7a), then ask Copilot for the same pa
 5. **Slicer:** **Year** ([Slicers](https://learn.microsoft.com/power-bi/visuals/power-bi-visualization-slicers)).
 6. Rename the page **Sales overview**. Select **File** > **Save**. Name the report `P07_Sales_Report`, save it in **ContosoPharma_Workshop**, and move it to your folder **P07**.
 
-✅ **Check:** with **2025** selected in the slicer, **Net Sales** shows 293.8 M.
+✅ **Check:** with **2025** selected in the slicer, the cards show **Net Sales** €294M (exactly €293,801,286), **Net Sales YoY %** 10.0 % and **Discount %** 10.4 %. More checks: [expected-values.csv](expected-values.csv).
 
 ![The finished Sales overview page in REF_Sales_Report: three cards, a monthly trend, and bars by therapeutic area and country](../docs/images/ui/lab1-14-report-overview.png)
 
@@ -340,5 +459,7 @@ Go through the [best-practices checklist](best-practices-checklist.md). In Lab 2
 | The **Year** slicer shows **(Blank)** | A relationship doesn't assume referential integrity, so Direct Lake keeps a blank member in the dimension. In the model, select **Manage relationships**, select the relationship, then **Edit**. Select **Assume referential integrity** and **Save**. Repeat for each relationship ([Assume referential integrity](https://learn.microsoft.com/power-bi/connect-data/desktop-assume-referential-integrity), [Model relationships](https://learn.microsoft.com/power-bi/transform-model/desktop-relationships-understand#relationship-evaluation)) |
 | **Prep data for AI** tabs are disabled | Select **Turn on Q&A** |
 | Copilot can't create a report page | Turn the model's Q&A switch on, and don't disable implicit measures |
+| **Net Sales** shows £, $ or another currency | Select **Net Sales** in the model. In **Properties** > **Formatting**, set **Currency format** to **€ Euro (€ 123)** and **Decimal places** to `0` (step 4a) |
+| A KPI formula shows a red underline after the renames in step 5 | Select another field, then the KPI again. The formula updates to the new column names by itself |
 | **Anomalies** is unavailable | Remove any legend or second measure. The X-axis must be a date |
 | You broke the model | **File** > **Version history** > restore, or continue with `REF_Sales_Model` in the folder **REF** |

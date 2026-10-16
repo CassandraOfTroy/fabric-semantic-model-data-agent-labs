@@ -10,9 +10,9 @@ Contoso Pharma sells prescription medicines to hospitals, specialist clinics, re
 All amounts are in EUR. The fiscal year is the calendar year. Data is available from January 2024 to September 2026.
 
 ## Terminology
-- "Sales", "revenue" or "turnover" means the measure Net Sales, unless the user explicitly asks for gross sales.
-- "GTN", "gross-to-net", "discount" or "rebate" means Discount Amount or Discount %.
-- "Packs" or "volume" means the measure Units Sold.
+- "Sales", "revenue" or "turnover" means the measure Net Sales.
+- "GTN", "gross-to-net", "discount" or "rebate" means the measure Discount %.
+- "Growth" or "year over year" means the measure Net Sales YoY %.
 - "TA" means Therapeutic Area.
 - "DACH" means Germany, Austria and Switzerland (Sales Region = DACH).
 - "Tender" means a hospital contract won in a public tender (Channel = Tender).
@@ -20,7 +20,7 @@ All amounts are in EUR. The fiscal year is the calendar year. Data is available 
 
 ## Rules
 - For trends over time, use the Date table (Month Start or Year Month). Do not use Order Date.
-- For year-over-year questions, use Net Sales YoY % and Net Sales PY.
+- For year-over-year questions, use Net Sales YoY %. Data for 2026 ends in September, so compare full years (2024 and 2025) unless the user asks for 2026.
 - If the user does not give a time period, use the last full year (2025) and say so in the answer.
 - Product names include the strength, for example "Zentora 100 mg tablets". If the user names only a brand, such as "Zentora", filter on Brand.
 - If a question is ambiguous (for example, which metric or which period), ask one short clarifying question before answering.

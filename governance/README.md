@@ -86,6 +86,7 @@ Search them in the Microsoft Purview portal under **Audit**, or in DSPM **Activi
 
   Source: [Data agent audit](https://learn.microsoft.com/fabric/data-science/data-agent-purview-governance).
 - **What's captured:** the user prompt and the agent response, as `CopilotInteraction` records in the unified audit log. Internal steps and backend queries aren't captured ([Data agent audit](https://learn.microsoft.com/fabric/data-science/data-agent-purview-governance)).
+- **Data agents only:** in **Activity explorer** > **AI activities**, filter **Agents involved** = *DataAgent*. In the audit log, data agent records have **AppIdentity** `Copilot.Fabric.DataAgent`; Copilot in Power BI has `Copilot.Fabric.CopilotForPowerBI`. Reading the prompt and response text needs the role group **Data Security AI Content Viewers** ([purview-demo.md, part 2](purview-demo.md#2-dspm-shows-what-people-ask-the-ai)).
 - **Also supported** for AI interactions: Insider Risk Management, Communication Compliance, eDiscovery and retention policies ([Purview for Copilot in Fabric](https://learn.microsoft.com/purview/ai-copilot-fabric)).
 - **Data risk assessments for Fabric:** DSPM scans Fabric workspaces for sensitive items and oversharing after a one-time connection (app registration with a federated credential, a security group, and two Fabric admin API settings). Step by step: [purview-demo.md](purview-demo.md#connect-dspm-to-fabric-for-data-risk-assessments).
 
@@ -105,5 +106,5 @@ Prepare this the day before ([setup, step 6](../setup/README.md#6-prepare-the-se
 1. **RLS through the agent (3 min):** in an InPrivate window, sign in as the test user (member of role `DACH`, not a workspace member). Open `REF_Sales_Agent` and ask *"What were net sales in France in 2025?"*, then *"Show net sales by country for 2025."* Only Germany, Austria and Switzerland appear.
 2. **Labels (1 min):** show the **Sensitivity** column in the workspace. Show that `REF_Sales_Report` inherited the model's label.
 3. **DLP (2 min):** open `GOV` > `LH_Customer_Finance` and show the policy tip, then the policy in Purview ([purview-demo.md, part 1](purview-demo.md#1-dlp-finds-bank-data-in-a-lakehouse)).
-4. **DSPM for AI (2 min):** in **Activity explorer** > **AI activities**, open one data agent interaction and show the prompt and the response ([purview-demo.md, part 2](purview-demo.md#2-dspm-shows-what-people-ask-the-ai)).
+4. **DSPM for AI (2 min):** in **Activity explorer** > **AI activities**, filter **Agents involved** = *DataAgent* to show data agent conversations only. Open one and show the agent, where it was used and the sources it read; with the content viewer role, also the prompt and the response ([purview-demo.md, part 2](purview-demo.md#2-dspm-shows-what-people-ask-the-ai)).
 5. **Audit (2 min):** in Purview **Audit**, search the last 24 hours for `CopilotInteraction` and `ApplyChangeToPowerBIModel`. Use records from the dry run, because audit data isn't instant.

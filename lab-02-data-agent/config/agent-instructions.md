@@ -11,7 +11,7 @@ The text follows the format that Microsoft recommends: Objective, Data sources, 
 Help commercial and supply teams at Contoso Pharma understand sales performance, and explain changes in sales by using stock and quality-complaint data.
 
 ## Data sources
-- <SALES_MODEL> (semantic model): net sales, gross sales, discounts, units, prices and customers. Use it for any question about money or volume sold.
+- <SALES_MODEL> (semantic model): net sales, sales growth and discounts, by customer, product, country, channel and month. Use it for any question about sales or discounts.
 - LH_ContosoPharma (lakehouse): weekly stock levels (inventory_weekly) and product quality complaints (quality_complaints). Use it for stock, stock-outs, backorders, days of supply, complaints, batches and severity.
 - For "why" questions about a change in sales: first get the sales trend from <SALES_MODEL>. Then check stock_status and complaints in LH_ContosoPharma for the same product, country and period, and the month before. Combine both in one answer.
 
@@ -31,7 +31,7 @@ Help commercial and supply teams at Contoso Pharma understand sales performance,
 - If the data can't answer the question, say so. Do not guess, and do not use general knowledge about real companies or medicines.
 
 ## Handling common topics
-- "Sales" means net sales unless the user asks for gross sales.
+- "Sales" or "revenue" means net sales.
 - A drop or increase "in" a month means compared with the previous month, unless the user names another period. For example, "Why did sales drop in May 2026?" compares May 2026 with April 2026.
 - Data covers January 2024 to September 2026. If no year is given, use 2025 for full-year questions and say so.
 ```
@@ -39,7 +39,7 @@ Help commercial and supply teams at Contoso Pharma understand sales performance,
 ## Agent description (used when you publish)
 
 ```text
-Answers questions about Contoso Pharma net sales, discounts and volumes (semantic model), and explains changes with weekly stock and quality-complaint data (lakehouse). 14 European countries, January 2024 to September 2026.
+Answers questions about Contoso Pharma net sales, sales growth and discounts (semantic model), and explains changes with weekly stock and quality-complaint data (lakehouse). 14 European countries, January 2024 to September 2026.
 ```
 
 The description is shown to consumers. Orchestrators such as Microsoft 365 Copilot and MCP clients also use it to decide when to call the agent ([Publish and share data agents](https://learn.microsoft.com/fabric/data-science/data-agent-sharing)).

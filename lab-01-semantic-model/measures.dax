@@ -1,7 +1,11 @@
-// Lab 1, step 4: paste this whole file into a new tab in DAX query view.
-// 1. Select Run to check the results.
-// 2. Select "Update model with changes" to add the measures to the model.
-// The /// lines become the measure descriptions.
+// Lab 1, step 4, the manual way: all measures in one go with DAX query view, instead of 4a and 4b.
+// Run it before step 5: the formulas use the original column names, for example net_sales_eur.
+// 1. At the bottom of the model editor, select DAX query view. Paste this whole file.
+// 2. Select Run to check the results.
+// 3. Select "Update model with changes" to add the measures to the model.
+//    MEASURE 'Sales'[...] puts each measure in the table Sales (its home table).
+//    The /// lines become the measure descriptions.
+// 4. Then run measures-time-intelligence.dax the same way, in a new query tab.
 // Expected results for 2025: Net Sales = 293,801,286.38 | Discount % = 0.104
 
 DEFINE
@@ -40,7 +44,8 @@ SUMMARIZECOLUMNS (
 ORDER BY 'Date'[year]
 
 // ---------------------------------------------------------------------------
-// Reference answers for the Copilot exercise (step 4.4). Compare them with what Copilot wrote.
+// Reference answers for the two time-intelligence measures. measures-time-intelligence.dax adds them.
+// Copilot writes Net Sales YoY % in step 4b: compare its DAX with this one.
 //
 //    /// Year-over-year change of net sales, in percent.
 //    MEASURE 'Sales'[Net Sales YoY %] = DIVIDE ( [Net Sales] - [Net Sales PY], [Net Sales PY] )

@@ -38,7 +38,7 @@ Optional for the Lab 2 demo of Microsoft 365 Copilot: the Microsoft 365 admin mu
 ## 3. Create the workspace and folders
 
 1. Create one workspace, `ContosoPharma_Workshop`. In **Workspace settings** > **License info**, assign the Fabric capacity.
-2. If the workspace settings show **Users can edit data models in the Power BI service**, turn it on. The DAX query view in the web depends on it ([DAX query view in the web](https://learn.microsoft.com/power-bi/transform-model/dax-query-view#dax-query-view-in-web)).
+2. If the workspace settings show **Users can edit data models in the Power BI service**, turn it on. Writing DAX queries in the browser needs it (Lab 1, step 4, other way), and it works together with the tenant setting for editing semantic models in the browser ([DAX query view in the web](https://learn.microsoft.com/power-bi/transform-model/dax-query-view#dax-query-view-in-web), [Workspace settings](https://learn.microsoft.com/power-bi/guidance/powerbi-implementation-planning-workspaces-workspace-level-planning#workspace-settings)).
 3. Add the participants as **Contributor**, as one security group rather than individual users. Contributors can create semantic models, reports and data agents ([Roles in workspaces](https://learn.microsoft.com/fabric/fundamentals/roles-workspaces)).
 4. Create the folders:
 
@@ -83,7 +83,13 @@ Do both labs yourself in the folder `REF`, with the names `REF_Sales_Model`, `RE
 - gives participants a fallback: anyone who falls behind can continue Lab 2 with `REF_Sales_Model`.
 - creates audit records you can show in the governance demo. Audit data isn't instant.
 
-Two things the dry run showed: a model created with **+ New item** > **Semantic model** is saved in the workspace root, not in the open folder (move it with **…** > **Move to**). And **Assume referential integrity** isn't selected by default in **New relationship**; without it every slicer shows an extra **(Blank)** item.
+What the dry run showed:
+
+- A new model is saved in the workspace root, not in the open folder, both from the lakehouse ribbon and from **+ New item** > **Semantic model**. Move it with **…** > **Move to**.
+- **Assume referential integrity** isn't selected by default in **New relationship**. Without it, every slicer shows an extra **(Blank)** item.
+- The amount columns of a new model get a currency format that isn't always €; in the dry run it was £. Step 4a sets **Net Sales** to €.
+
+`REF_Sales_Model` has seven measures more than the participants' models (for example **Units Sold** and **Net Sales YTD**). The labs use only the three KPIs from Lab 1, step 4.
 
 ## 6. Prepare the security demos
 
@@ -123,7 +129,7 @@ Status is taken from Microsoft Learn on 13 October 2026.
 | Load to tables (lakehouse) | Setup | Available | [Load to tables](https://learn.microsoft.com/fabric/data-engineering/load-to-tables) |
 | Direct Lake semantic models in web modeling | 1 | Available | [Direct Lake in web modeling](https://learn.microsoft.com/fabric/fundamentals/direct-lake-web-modeling) |
 | Copilot in web modeling | 1 | Preview | [Copilot in web modeling](https://learn.microsoft.com/power-bi/transform-model/copilot-web-modeling) |
-| Copilot in DAX query view | 1 | Available | [Write DAX queries with Copilot](https://learn.microsoft.com/dax/dax-copilot) |
+| Measure descriptions with Copilot | 1 | Available | [Measure descriptions with Copilot](https://learn.microsoft.com/power-bi/transform-model/desktop-measure-copilot-descriptions) |
 | Prep data for AI (AI data schema, AI instructions, verified answers) | 1, 2 | Preview | [Prepare your data for AI](https://learn.microsoft.com/power-bi/create-reports/copilot-prepare-data-ai) |
 | Copilot report creation and the narrative visual | 1 | Available | [Create reports with Copilot](https://learn.microsoft.com/power-bi/create-reports/copilot-create-reports) |
 | Anomaly detection, key influencers, decomposition tree, forecast | 1 | Available | [Anomaly detection](https://learn.microsoft.com/power-bi/visuals/power-bi-visualization-anomaly-detection) |
