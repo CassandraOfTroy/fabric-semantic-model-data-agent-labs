@@ -19,12 +19,12 @@ Together they answer the question Lab 1 couldn't: *why* did sales of Zentora 100
 
 ## Two personas, one flow
 
-The personas aren't two separate labs. Everyone does the same flow and switches hats halfway: you build your own agent as the **developer**, then swap with your neighbour and test their agent as the **business user**.
+The personas aren't two separate labs. Everyone does the same flow and switches hats halfway: you build your own agent as the **developer**, then swap with your neighbour and test their agent with the **business user's** questions. As a Contributor you can also open the draft and change the configuration. A workspace **Viewer** sees the agent read-only, without **Build agent with AI** or **Test data agent**. Business users can also use the published agent in Microsoft 365 Copilot or Teams, and report problems from there.
 
 | Persona | Goal | Part |
 | --- | --- | --- |
 | **Developer** | Create, configure, test and publish the agent. Connect to it through MCP. Evaluate it in batch | [Part A – Developer](part-a-developer.md) |
-| **Power business user** | Test the agent against business questions, get answers as charts, give structured feedback, and shape its configuration | [Part B – Business user](part-b-business-user.md) |
+| **Power business user** | Test the agent with a fixed question list, get answers as charts, give feedback, and shape its configuration. See how business users report problems from Microsoft 365 Copilot or Copilot Studio | [Part B – Business user](part-b-business-user.md) |
 
 ## Agenda
 
@@ -32,7 +32,7 @@ The personas aren't two separate labs. Everyone does the same flow and switches 
 | --- | --- | ---: |
 | 0:00 | Intro: where people ask questions (Microsoft 365 Copilot), what a data agent adds, the agent screen, GA and preview | 10 |
 | 0:10 | **Part A – Developer**: create, add sources, Build agent with AI, instructions, test, publish, MCP | 55 |
-| 1:05 | **Part B – Business user**: explore, charts, structured test, feedback loop, Microsoft 365 Copilot | 40 |
+| 1:05 | **Part B – Business user**: explore, charts, question-list test, how business users report problems, Microsoft 365 Copilot | 40 |
 | 1:45 | Governance demo: RLS through the agent, audit and DSPM for AI, labels ([governance](../governance/README.md)) | 10 |
 | 1:55 | Which gaps are closed today, and which are on the roadmap ([gap matrix](gap-closure.md)) | 5 |
 
@@ -55,7 +55,7 @@ The personas aren't two separate labs. Everyone does the same flow and switches 
 | --- | --- |
 | [config/agent-instructions.md](config/agent-instructions.md) | Agent instructions and publish description |
 | [config/lakehouse-datasource.md](config/lakehouse-datasource.md) | Lakehouse description, instructions and 5 example queries |
-| [testing/business-test-sheet.csv](testing/business-test-sheet.csv) | Test sheet for the business user (Part B) |
+| [testing/business-test-sheet.csv](testing/business-test-sheet.csv) | Question list for the Part B workshop exercise, with columns to fill in |
 | [testing/answer-key.csv](testing/answer-key.csv) | Expected answers (instructor) |
 | [testing/ground_truth.csv](testing/ground_truth.csv) | Question and expected-answer pairs for the evaluation SDK |
 | [notebooks/evaluate_data_agent.ipynb](notebooks/evaluate_data_agent.ipynb) | Batch evaluation with the Fabric data agent SDK (preview) |

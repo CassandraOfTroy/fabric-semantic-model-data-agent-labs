@@ -151,7 +151,7 @@ Open **Setup** in the **Explorer** to see all of them.
 
    ![Grant people access to a data agent: Share, Edit and view details, View details](../docs/images/ui/lab2-11-share-agent.png)
 
-   > In this workshop every participant is a Contributor in the workspace. That role already allows editing every item, so the share options don't restrict your partner. They apply to people **without a workspace role**, which is how real business users get access. The instructor shows this in the governance demo with a test account.
+   > In this workshop every participant is a Contributor in the workspace. That role already allows editing every item, so the share options don't restrict your partner. They apply to people **without a workspace role**, one way business users get access. Business users can also be workspace **Viewers**: they can't change items, and they don't get **Test data agent** ([Part B](part-b-business-user.md)). The instructor shows sharing in the governance demo with a test account.
 
 Users also need access to every source behind the agent: **Read** on the semantic model, and **Read** on the lakehouse item. RLS and CLS still apply. A Direct Lake model that uses SSO also needs **ReadAll** on the lakehouse; `REF_Sales_Model` uses a fixed-identity connection instead, so its readers need no lakehouse access ([governance – RLS that holds](../governance/README.md#rls-that-holds-fixed-identity)). In this workshop, every participant already has this access as a Contributor ([Direct Lake security](https://learn.microsoft.com/fabric/fundamentals/direct-lake-security-integration#permission-requirements)).
 
