@@ -1,0 +1,11 @@
+term,expected_table,expected_column,expected_value,feature
+Zentora,Product,Brand,Zentora,AI instructions: brand rule
+Zentora 100 mg tablets,Product,Product Name,Zentora 100 mg tablets,Value grounding
+DACH,Customer,Sales Region,DACH,AI instructions: terminology
+Tender,Sales,Channel,Tender,AI instructions: terminology
+Wholesale,Sales,Channel,Wholesale,Value grounding
+Germany,Customer,Country,Germany,Value grounding
+Oncology,Product,Therapeutic Area,Oncology,Value grounding
+Hospital,Customer,Customer Type,Hospital,Value grounding
+UK & Ireland,Customer,Sales Region,UK & Ireland,Value grounding
+Pre-filled pen,Product,Formulation,Pre-filled pen,Value grounding

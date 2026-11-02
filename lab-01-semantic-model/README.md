@@ -323,6 +323,8 @@ This isn't chatting with your data. Copilot in the model editor changes the mode
 
 4. Select **Apply**. Changes can take a few minutes to reach Copilot.
 
+> **Test it at scale:** [Lab 3](../lab-03-ai-readiness-evals/README.md) checks these settings with a script and a question set, through Fabric IQ MCP.
+
 ## Step 7 – Create the report by hand, then with Copilot
 
 You build the overview page by hand first (7a), then ask Copilot for the same page (7b). That way you know what a good page looks like and can judge what Copilot builds.

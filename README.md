@@ -1,7 +1,7 @@
 # Microsoft Fabric hands-on labs
 
-**Build a semantic model with Copilot, then put a Fabric data agent on top of it.**
-Two beginner labs, 2 hours each, browser only. Built for a group that shares one workspace.
+**Build a semantic model with Copilot, put a Fabric data agent on top of it, then evaluate how AI-ready the model is.**
+Two beginner labs, 2 hours each, browser only, plus an optional developer lab. Built for a group that shares one workspace.
 
 ![Workshop setup: one Fabric capacity and one workshop workspace. The folder 00_Shared holds the shared lakehouse LH_ContosoPharma, REF holds the instructor's reference items, and every participant has a folder, for example P07, with P07_Sales_Model and P07_Sales_Report from Lab 1 and P07_Sales_Agent from Lab 2. Governance across all of it: row-level security, sensitivity labels, DLP, Purview Audit, DSPM for AI.](docs/images/workshop-setup.png)
 
@@ -17,15 +17,17 @@ Two beginner labs, 2 hours each, browser only. Built for a group that shares one
 
 Follow the [instructor setup](setup/README.md) at least one day before the session.
 
-## The two labs
+## The labs
 
-| | Lab 1 · Semantic model | Lab 2 · Data agent |
-| --- | --- | --- |
-| **You build** | A semantic model on the shared lakehouse (Direct Lake) and a report with AI visuals | A data agent on your model plus 2 lakehouse tables |
-| **AI used** | Copilot in web modeling (KPIs, clean-up) and in reports, AI visuals | Build agent with AI, answers as charts |
-| **Roles** | Model and report author | Developer and business user |
-| **Time** | 120 minutes | 120 minutes |
-| **Guide** | **[Open Lab 1 →](lab-01-semantic-model/README.md)** | **[Open Lab 2 →](lab-02-data-agent/README.md)** |
+| | Lab 1 · Semantic model | Lab 2 · Data agent | Lab 3 · AI readiness evals (optional) |
+| --- | --- | --- | --- |
+| **You build** | A semantic model on the shared lakehouse (Direct Lake) and a report with AI visuals | A data agent on your model plus 2 lakehouse tables | A scripted evaluation of your model's Prep data for AI, through Fabric IQ MCP |
+| **AI used** | Copilot in web modeling (KPIs, clean-up) and in reports, AI visuals | Build agent with AI, answers as charts | GitHub Copilot CLI with the fabriciq skill, as the agent under test |
+| **Roles** | Model and report author | Developer and business user | Model author, developer |
+| **Time** | 120 minutes | 120 minutes | 60 minutes |
+| **Guide** | **[Open Lab 1 →](lab-01-semantic-model/README.md)** | **[Open Lab 2 →](lab-02-data-agent/README.md)** | **[Open Lab 3 →](lab-03-ai-readiness-evals/README.md)** |
+
+Lab 3 needs Python, the Azure CLI and GitHub Copilot CLI on your machine.
 
 ![Use case 1: the semantic model P07_Sales_Model reads the shared lakehouse tables directly (Direct Lake) and feeds the report P07_Sales_Report. Lab steps 1 to 9 are shown under each stage. Copilot helps at step 4 (business KPIs, preview), step 5 (model clean-up, preview), step 7 (report pages) and step 8 (narrative).](docs/images/use-case-1-semantic-model.png)
 
@@ -44,6 +46,7 @@ All data is synthetic and all names are fictional. Column descriptions are in th
 | --- | --- |
 | [lab-01-semantic-model](lab-01-semantic-model/) | Lab 1 guide, KPI definitions, DAX files, Copilot prompts, AI instructions, best-practice checklist |
 | [lab-02-data-agent](lab-02-data-agent/) | Lab 2 guides (developer, business user), agent configuration, test sheets, MCP setup, evaluation notebook, gap matrix |
+| [lab-03-ai-readiness-evals](lab-03-ai-readiness-evals/) | Lab 3 guide, Python evaluation runner for Fabric IQ MCP and GitHub Copilot CLI, test set, readiness rules |
 | [governance](governance/) | Row-level security, sensitivity labels, DLP, audit, DSPM for AI, and a 10-minute demo script |
 | [setup](setup/) | Instructor setup guide, plus an optional notebook that loads the lakehouse from CSV |
 | [data](data/) | The data as CSV (readable) and Parquet (typed, for upload to the lakehouse), plus the data dictionary |

@@ -14,3 +14,6 @@ Thumbs.db
 *.pbix
 *.pbit
 .pbi/
+
+# Lab 3 evaluation output (answers, DAX and traces)
+lab-03-ai-readiness-evals/results/

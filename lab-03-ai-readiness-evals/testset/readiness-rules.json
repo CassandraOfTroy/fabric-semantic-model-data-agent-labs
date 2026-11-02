@@ -1,0 +1,41 @@
+{
+  "description": "Readiness rules for the Lab 1 sales model. Change them to match your own model.",
+  "must_not_expose": [
+    "Sales Line ID",
+    "Units",
+    "Unit Price EUR",
+    "Gross Sales EUR",
+    "Discount EUR",
+    "Net Sales EUR",
+    "Country Code",
+    "Month Number",
+    "List Price EUR",
+    "Week Ending"
+  ],
+  "ignore_description_columns_regex": " Key$",
+  "description_max_chars": 200,
+  "min_description_coverage": 0.9,
+  "date_table": "Date",
+  "ai_instructions": {
+    "max_chars": 10000,
+    "source_of_truth": "../lab-01-semantic-model/ai-instructions.md",
+    "must_mention": ["Net Sales", "GTN", "DACH", "TA", "Tender", "Key account", "Brand", "2025"],
+    "referenced_objects": [
+      "Net Sales",
+      "Discount %",
+      "Net Sales YoY %",
+      "Month Start",
+      "Year Month",
+      "Sales Region",
+      "Channel",
+      "Key Account",
+      "Brand",
+      "Therapeutic Area",
+      "Date"
+    ]
+  },
+  "verified_answers": {
+    "min_count": 1,
+    "expected": ["therapeutic area"]
+  }
+}
