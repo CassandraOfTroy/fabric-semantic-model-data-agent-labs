@@ -89,27 +89,15 @@ Each run writes `results/<yyyyMMdd-HHmmss>/`. The `results` folder is in `.gitig
 
 ```mermaid
 sequenceDiagram
-    autonumber
     participant R as run_evals.py
-    participant C as Copilot CLI
-    participant L as Copilot LLM
-    participant F as Fabric IQ MCP
-    participant M as Semantic model
-    R->>C: copilot -p question, Fabric IQ config with your token
-    C->>L: question, fabriciq skill, Fabric IQ tools
-    L-->>C: call GetSemanticModelSchema
-    C->>F: tools/call
-    F->>M: read tables, descriptions, AI instructions
-    F-->>C: model context
-    C->>L: tool result
-    L-->>C: call ValueSearch and ExecuteQuery with DAX
-    C->>F: tools/call
-    F->>M: run the DAX as you, RLS applies
-    F-->>C: rows
-    C->>L: tool result
-    L-->>C: final answer
-    C-->>R: JSONL events with answer, tool calls and DAX
-    R->>R: score the answer and the DAX, write the report
+    participant C as Copilot CLI (AI agent)
+    participant F as Fabric IQ
+    R->>C: one question
+    C->>F: read the schema and the AI instructions
+    C->>F: look up names, run DAX
+    F-->>C: rows, as you see them
+    C-->>R: the answer and the DAX it ran
+    R->>R: compare with the correct answer
 ```
 
 For each question, `agent_eval.py`:

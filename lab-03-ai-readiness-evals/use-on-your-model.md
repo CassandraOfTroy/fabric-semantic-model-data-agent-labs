@@ -2,24 +2,22 @@
 
 How to explain the evaluation to a customer or a model owner, what you need, and what you change to run it on your own Power BI semantic model.
 
-**In short:** you keep the Python code as it is, and you write a *test set* for your model: your users' questions with validated answers, your business terms, and your readiness rules. Then you run the same commands as in the lab.
+**In short:** the Python code is the grader and stays the same. Your model needs its own quiz: three files with your users' questions and correct answers, your business words, and a few rules. Then you run the same commands as in the lab.
 
 ## Explain it in two minutes
 
-**What it is.** A repeatable test of how well AI agents answer business questions from your semantic model. It reads the model the way Fabric IQ agents do, through the [Fabric IQ MCP server](https://learn.microsoft.com/fabric/iq/connectors/fabric-iq-mcp) and with your permissions. Then it checks the answers, and the DAX behind them, against results you've validated.
+**What it is.** A quiz for your semantic model. You write business questions with their correct answers. An AI agent answers them by reading your model through the [Fabric IQ MCP server](https://learn.microsoft.com/fabric/iq/connectors/fabric-iq-mcp), the read-only access point that Fabric IQ agents use. A script grades every answer, and the DAX behind it.
 
 **Why.** Prep data for AI (the AI data schema and AI instructions) changes how Copilot and agents answer. Power BI doesn't have a batch test for it. Microsoft's guidance is to test a representative set of business questions against validated results ([Prepare the semantic model for Fabric IQ](https://learn.microsoft.com/power-bi/create-reports/copilot-ask-data-question#prepare-the-semantic-model-for-fabric-iq)). This does that in minutes, every time the model changes.
 
-**What you get.** A report with four layers:
+**What you get.** A report from two paths:
 
-| Layer | Answers the question | LLM |
+| Path | Answers the question | AI |
 | --- | --- | --- |
-| L1 readiness lint | Does the model give agents the right fields, descriptions and AI instructions? | No |
-| L2 value grounding | Do our business terms resolve to the right column and value? | No |
-| L3 ground truth | Do our measures return the validated numbers? | No |
-| L4 agent | Does an agent answer our users' questions correctly, and with the right DAX? | Yes |
+| **A. Checks without AI** | Does the model give agents the right fields, descriptions and AI instructions? Do our business words hit the right columns? Do our measures return the validated numbers? | No |
+| **B. The AI quiz** | Does an agent answer our users' questions correctly, with the right measure and filters? | Yes |
 
-Every finding is mapped to where you fix it in Power BI. The architecture is in the [Lab 3 README](README.md#how-it-works).
+Every finding is mapped to where you fix it in Power BI. How it works: [Lab 3 README](README.md#how-it-works).
 
 **What it isn't:**
 
@@ -46,24 +44,23 @@ Every finding is mapped to where you fix it in Power BI. The architecture is in 
 
 | Requirement | Why | Source |
 | --- | --- | --- |
-| A GitHub Copilot licence for each person who runs L4 or the interactive review | Copilot CLI and Copilot Chat | [Installing GitHub Copilot CLI](https://docs.github.com/copilot/how-tos/set-up/install-copilot-cli) |
+| A GitHub Copilot licence for each person who runs path B or the interactive review | Copilot CLI and Copilot Chat | [Installing GitHub Copilot CLI](https://docs.github.com/copilot/how-tos/set-up/install-copilot-cli) |
 | Organization or enterprise policies allow Copilot CLI and **MCP servers in Copilot**, and the LLMs you want to use | Administrators can turn off each of them | [Managing policies for Copilot in your organization](https://docs.github.com/copilot/how-tos/administer-copilot/manage-for-organization/manage-policies) |
-| A usage budget. Each L4 question run is one Copilot CLI prompt; `--judge` adds one more | Copilot usage is billed under your plan | [GitHub Copilot billing and usage](https://docs.github.com/copilot/concepts/billing-and-usage) |
+| A usage budget. Each question in path B is one Copilot CLI prompt per run; `--judge` adds one more | Copilot usage is billed under your plan | [GitHub Copilot billing and usage](https://docs.github.com/copilot/concepts/billing-and-usage) |
 
 ### Your machine
 
-| Tool | Get it | Used for |
+| Tool | Why | Needed for |
 | --- | --- | --- |
-| VS Code with GitHub Copilot | [VS Code](https://code.visualstudio.com/) | Interactive review, editing the test set, the terminal |
-| Python 3.10 or later | [python.org](https://www.python.org/downloads/) | The scripts: `pip install -r eval/requirements.txt` |
-| Azure CLI | [Install the Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) | Sign-in: `az login` |
-| GitHub Copilot CLI | `winget install GitHub.Copilot`, or `npm install -g @github/copilot` with Node.js 22 or later | L4 |
-| PowerShell 7 (Windows) | [Install PowerShell](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) | Copilot CLI on Windows |
-| Skills for Fabric (recommended) | In Copilot CLI: `/plugin marketplace add microsoft/skills-for-fabric`, then `/plugin install fabric-skills@fabric-collection` | The fabriciq skill, which Microsoft recommends with Fabric IQ ([Install Skills for Fabric](https://learn.microsoft.com/fabric/fundamentals/skills-for-fabric-install)) |
+| [Python 3.10+](https://www.python.org/downloads/) | Runs the grader: `pip install -r eval/requirements.txt` | Paths A and B |
+| [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) | Signs you in with `az login`. Fabric IQ accepts only a user's sign-in, not a service account | Paths A and B |
+| GitHub Copilot CLI: `winget install GitHub.Copilot`, or `npm install -g @github/copilot` with Node.js 22+ | The AI agent that takes the quiz. A script can start it with one question, and it reports back every DAX query it ran. On Windows it needs [PowerShell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell) | Path B |
+| Skills for Fabric (recommended): in Copilot CLI, `/plugin marketplace add microsoft/skills-for-fabric`, then `/plugin install fabric-skills@fabric-collection` | The manual the agent follows for Fabric IQ: read the AI instructions, look up names before filtering, never invent numbers. Without it, each agent improvises, and a failure tells you less about your model ([Install Skills for Fabric](https://learn.microsoft.com/fabric/fundamentals/skills-for-fabric-install)) | Path B |
+| [VS Code](https://code.visualstudio.com/) (optional) | Editor and terminal, and the optional interactive review with Copilot Chat | – |
 
 ### Data governance
 
-- **What leaves Fabric.** In L4, `--judge` and the interactive review, model metadata and query results go to the LLM that GitHub Copilot uses. Agree on that with the data owner before you use production data. L1 to L3 and `inspect_model.py` don't use an LLM.
+- **What leaves Fabric.** In path B, `--judge` and the interactive review, model metadata and query results go to the AI model that GitHub Copilot uses. Agree on that with the data owner before you use production data. Path A and `inspect_model.py` don't use AI.
 - **What stays on your machine.** The `results/` folder holds answers, DAX and query results. Keep it out of source control; it's in `.gitignore`.
 - **The test set is business data.** It holds validated numbers, so keep it in a private repository.
 
@@ -114,7 +111,7 @@ You don't change `run_evals.py`, `fabriciq_client.py`, `model_checks.py` or `age
 python eval/inspect_model.py --model "<semantic model URL or ID>"
 ```
 
-Then run the interactive review in VS Code ([Lab 3, step 1](README.md#step-1--look-at-what-ai-sees-in-vs-code-10-min)). Write down three things:
+Then, optionally, run the interactive review in VS Code ([Lab 3, step 1](README.md#step-1--see-what-an-agent-sees-5-min)). Write down three things:
 
 - the fields an agent sees that it shouldn't, such as IDs, raw amounts and sort columns
 - the terms your users use: abbreviations, product names, regions, channels
@@ -171,7 +168,7 @@ A probe passes when Fabric IQ's best match is the expected value. It's a warning
 | An ambiguous question | *How are we doing?* | `clarify` |
 | Data that isn't in the model | *How many quality complaints did we get?* | `decline` |
 
-**Validate the expected values outside the model.** Take them from the source system or a report that finance has signed off, not from the model you're testing. Otherwise L3 can't catch a wrong measure. The workshop values came from the source CSV files ([build_answer_key.py](../scripts/build_answer_key.py)).
+**Validate the expected values outside the model.** Take them from the source system or a report that finance has signed off, not from the model you're testing. Otherwise path A can't catch a wrong measure. The workshop values came from the source CSV files ([build_answer_key.py](../scripts/build_answer_key.py)).
 
 **The columns of `questions.csv`:**
 
@@ -187,7 +184,7 @@ A probe passes when Fabric IQ's best match is the expected value. It's a warning
 | `must_mention` | No | `Oncology\|2025` | Words the answer must contain |
 | `dax_must_contain` | No | `Discount Amount~Discount %\|DACH` | Tokens the agent's DAX must contain. `\|` separates tokens; `~` means *or* |
 | `dax_must_not_contain` | No | `Order Date` | Tokens the DAX must not contain |
-| `reference_dax` | For L3 | `EVALUATE ROW ( "Value", CALCULATE ( [Net Sales], 'Date'[Year] = 2025 ) + 0 )` | Your own DAX that returns the expected numbers. Add `+ 0` and use an alias that isn't a measure name; otherwise Fabric IQ returns formatted text |
+| `reference_dax` | For path A (L3) | `EVALUATE ROW ( "Value", CALCULATE ( [Net Sales], 'Date'[Year] = 2025 ) + 0 )` | Your own DAX that returns the expected numbers. Add `+ 0` and use an alias that isn't a measure name; otherwise Fabric IQ returns formatted text |
 
 Tips:
 
@@ -195,17 +192,19 @@ Tips:
 - **Prefer numbers and DAX checks over words.** Wording changes from run to run; the measure and the filters shouldn't.
 - **Check the DAX, not only the number.** A right number from the wrong measure breaks on the next question.
 
-### Step 5 – Validate the test set: run L1 to L3 (10 min)
+### Step 5 – Validate the test set: run path A (10 min)
 
 ```powershell
 python eval/run_evals.py --model "<semantic model URL or ID>" --testset <your test set> --layers lint,grounding,truth
 ```
 
-- **L3 fails:** the expected value or the measure is wrong. Find out which with the data owner before you go on.
-- **L1 fails on `must_not_expose`:** untick the field in **Prep data for AI** > **Simplify the data schema**. Hiding it in the model isn't enough.
-- **L2 warns:** add a line to the AI instructions that says which column the term means.
+The report shows path A as three layers:
 
-### Step 6 – Baseline the agent (30 min)
+- **L3 (correct numbers) fails:** the expected value or the measure is wrong. Find out which with the data owner before you go on.
+- **L1 (readiness) fails on `must_not_expose`:** untick the field in **Prep data for AI** > **Simplify the data schema**. Hiding it in the model isn't enough.
+- **L2 (word lookup) warns:** add a line to the AI instructions that says which column the term means.
+
+### Step 6 – Baseline the AI quiz, path B (30 min)
 
 ```powershell
 python eval/run_evals.py --model "<semantic model URL or ID>" --testset <your test set> --repeat 3 --llm <model>
@@ -219,7 +218,7 @@ Change one Prep data for AI setting at a time. Wait a few minutes, rerun the aff
 
 ### Step 8 – Make it routine
 
-- Run L1 to L3 after every model change, and L4 before you mark the model **Approved for Copilot** and after every Prep data for AI change.
+- Run path A after every model change, and path B before you mark the model **Approved for Copilot** and after every Prep data for AI change.
 - Use `--fail-under 0.9` as a gate in your release checklist. It needs a person's sign-in, so run it on a developer machine or a pipeline agent that signs in as a user, not as a service principal.
 - When a user reports a wrong answer, add the question to the test set.
 
@@ -231,11 +230,11 @@ Change one Prep data for AI setting at a time. Wait a few minutes, rerun the aff
 | Does it change my model? | No. Fabric IQ is read-only, and so are the scripts |
 | Do we still need verified answers? | They help Copilot in Power BI without Fabric IQ. Fabric IQ doesn't use them, so this evaluation doesn't test them |
 | Can it run unattended with a service principal? | No. Fabric IQ supports only delegated user sign-in |
-| Which data leaves Fabric? | L1 to L3: nothing goes to an LLM. L4 and the interactive review: model metadata and query results go to the LLM that GitHub Copilot uses |
+| Which data leaves Fabric? | Path A: nothing goes to an AI. Path B and the interactive review: model metadata and query results go to the AI model that GitHub Copilot uses |
 | Can we test RLS roles? | Yes: run it as a test user in that role. Results are always what the signed-in user can see |
-| How long does it take? | L1 to L3: under a minute. L4: about 30 seconds per question per run |
+| How long does it take? | Path A: under a minute. Path B: about 30 seconds per question per run |
 | What does it cost? | GitHub Copilot usage: one Copilot CLI prompt per question and run, plus one per `--judge` grade. The DAX queries run against your model like report queries |
-| Can we use another agent than Copilot CLI? | L1 to L3 don't use an agent. For L4, the runner reads Copilot CLI's event stream; another MCP client needs its own runner in [agent_eval.py](eval/agent_eval.py) |
+| Can we use another agent than Copilot CLI? | Path A doesn't use an agent. For path B, the runner reads Copilot CLI's event stream; another MCP client needs its own runner in [agent_eval.py](eval/agent_eval.py) |
 
 ## Sources
 
