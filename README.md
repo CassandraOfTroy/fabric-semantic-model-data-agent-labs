@@ -27,7 +27,7 @@ Follow the [instructor setup](setup/README.md) at least one day before the sessi
 | **Time** | 120 minutes | 120 minutes | 60 minutes |
 | **Guide** | **[Open Lab 1 →](lab-01-semantic-model/README.md)** | **[Open Lab 2 →](lab-02-data-agent/README.md)** | **[Open Lab 3 →](lab-03-ai-readiness-evals/README.md)** |
 
-Lab 3 needs Python, the Azure CLI and GitHub Copilot CLI on your machine.
+Lab 3 needs Python, the Azure CLI and GitHub Copilot CLI on your machine. To run it on your own semantic model, see [Use Lab 3 on your own semantic model](lab-03-ai-readiness-evals/use-on-your-model.md).
 
 ![Use case 1: the semantic model P07_Sales_Model reads the shared lakehouse tables directly (Direct Lake) and feeds the report P07_Sales_Report. Lab steps 1 to 9 are shown under each stage. Copilot helps at step 4 (business KPIs, preview), step 5 (model clean-up, preview), step 7 (report pages) and step 8 (narrative).](docs/images/use-case-1-semantic-model.png)
 

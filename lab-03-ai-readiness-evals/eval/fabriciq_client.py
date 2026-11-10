@@ -123,6 +123,14 @@ class FabricIQClient:
             return decoded
         raise FabricIQError(f"{tool}: still failing after {retries} attempts")
 
+    def list_tools(self) -> list[str]:
+        """Tool names from tools/list. Microsoft recommends reading them at runtime instead of hard-coding them."""
+        self._id += 1
+        message = self._post({"jsonrpc": "2.0", "id": self._id, "method": "tools/list", "params": {}})
+        if "error" in message:
+            raise FabricIQError(f"tools/list: {message['error']}")
+        return [t["name"] for t in message["result"].get("tools", [])]
+
     def resolve(self, item: str) -> dict:
         return self.call("ResolveFabricItem", {"fabricItemId": item})
 

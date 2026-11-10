@@ -25,6 +25,16 @@ Reply to the business user with your final answer.
 
 Question: {question}"""
 
+# The six Fabric IQ V1 tools, used only if tools/list isn't available.
+DEFAULT_FABRICIQ_TOOLS = ["DiscoverArtifacts", "ResolveFabricItem", "GetReportMetadata",
+                          "GetSemanticModelSchema", "ValueSearch", "ExecuteQuery"]
+
+
+def agent_tools(fabriciq_tools: list[str] | None = None) -> list[str]:
+    """The only tools the agent under test can see: the skill loader and the Fabric IQ tools.
+    Without this list, Copilot CLI can auto-approve shell commands, and the agent could read the test set."""
+    return ["skill"] + [f"FabricIQ-{name}" for name in (fabriciq_tools or DEFAULT_FABRICIQ_TOOLS)]
+
 
 def copilot_command() -> list[str]:
     override = os.environ.get("COPILOT_CLI_PATH")
@@ -107,7 +117,8 @@ def parse_events(lines: list[str]) -> dict:
 
 
 def run_question(question: str, model_id: str, model_name: str, token: str,
-                 llm: str | None = None, timeout: int = 420, trace_path: Path | None = None) -> dict:
+                 llm: str | None = None, timeout: int = 420, trace_path: Path | None = None,
+                 available_tools: list[str] | None = None) -> dict:
     workdir = Path(tempfile.mkdtemp(prefix="ai-readiness-"))
     config = workdir / "mcp-config.json"
     config.write_text(json.dumps(_mcp_config(token)), encoding="utf-8")
@@ -116,6 +127,7 @@ def run_question(question: str, model_id: str, model_name: str, token: str,
         "--additional-mcp-config", f"@{config}",
         "--allow-tool=FabricIQ", "--allow-tool=skill",
         "--no-ask-user", "--no-color", "--no-custom-instructions",
+        "--available-tools", *(available_tools or agent_tools()),
         "--output-format", "json",
     ]
     if llm:
@@ -162,9 +174,11 @@ Actual answer:
 def judge(question: str, expected: str, actual: str, llm: str | None = None, timeout: int = 180) -> bool | None:
     """Optional LLM critic, like the data agent evaluation SDK. Uses Copilot CLI with no tools."""
     workdir = Path(tempfile.mkdtemp(prefix="ai-readiness-judge-"))
+    # "no_tools" matches no tool, so the judge has none: it reads the agent's answer, which is untrusted text.
     cmd = copilot_command() + [
         "-p", JUDGE_PROMPT.format(question=question, expected=expected, actual=actual or "(no answer)"),
         "-s", "--no-ask-user", "--no-color", "--no-custom-instructions", "--disable-builtin-mcps",
+        "--available-tools", "no_tools",
     ]
     if llm:
         cmd += ["--model", llm]

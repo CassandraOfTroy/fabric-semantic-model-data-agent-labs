@@ -1,5 +1,5 @@
 {
-  "description": "Readiness rules for the Lab 1 sales model. Change them to match your own model.",
+  "description": "Readiness rules for the Lab 1 sales model. Change them to match your own model. Paths are relative to this file.",
   "must_not_expose": [
     "Sales Line ID",
     "Units",
@@ -18,7 +18,7 @@
   "date_table": "Date",
   "ai_instructions": {
     "max_chars": 10000,
-    "source_of_truth": "../lab-01-semantic-model/ai-instructions.md",
+    "source_of_truth": "../../lab-01-semantic-model/ai-instructions.md",
     "must_mention": ["Net Sales", "GTN", "DACH", "TA", "Tender", "Key account", "Brand", "2025"],
     "referenced_objects": [
       "Net Sales",

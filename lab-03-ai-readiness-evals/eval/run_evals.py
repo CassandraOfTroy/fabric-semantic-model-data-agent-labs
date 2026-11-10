@@ -7,9 +7,13 @@ Layers
   agent      L4  GitHub Copilot CLI answers the test questions through Fabric IQ, scored per run
 
 Examples
-  python run_evals.py --model REF_Sales_Model --layers lint,grounding,truth
-  python run_evals.py --model <semantic-model-guid-or-url> --repeat 3 --parallel 3
-  python run_evals.py --model REF_Sales_Model --questions Q02,Q05 --judge
+  python run_evals.py --model <semantic model URL or ID> --layers lint,grounding,truth
+  python run_evals.py --model <semantic model URL or ID> --repeat 3
+  python run_evals.py --model <semantic model URL or ID> --questions Q02,Q05 --judge
+  python run_evals.py --model <ID> --testset ../my-testset --out ../my-results
+  python run_evals.py --rescore ../results/20261102-173021
+
+See eval/README.md for every option, the input files and the outputs.
 """
 
 from __future__ import annotations
@@ -27,9 +31,9 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
-from agent_eval import judge, run_question
+from agent_eval import agent_tools, judge, run_question
 from fabriciq_client import FabricIQClient, FabricIQError, get_token
-from model_checks import FAIL, PASS, WARN, discoverability, ground_truth, readiness_lint, value_grounding
+from model_checks import FAIL, INFO, PASS, WARN, discoverability, ground_truth, readiness_lint, value_grounding
 from scoring import score_case
 
 LAB = Path(__file__).resolve().parent.parent
@@ -37,9 +41,9 @@ GUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 FIX_HINTS = {
     "AI data schema": "Prep data for AI > Simplify the data schema",
     "AI instructions": "Prep data for AI > Add AI instructions",
-    "Verified answers": "Report visual > ... > Set up a verified answer",
+    "Verified answers": "Not used by Fabric IQ. Test them in the Copilot pane",
     "Descriptions": "Model descriptions (Copilot reads the first 200 characters)",
-    "Value grounding": "Column values, names and synonyms in the model",
+    "Value grounding": "Column values and names, plus AI instructions for terms that match several columns",
     "Model design": "Model relationships, date table and formats",
     "Groundedness": "AI instructions: say what the model doesn't contain",
     "Discoverability": "Model name, description, endorsement and Approved for Copilot",
@@ -90,7 +94,8 @@ def feature_group(feature: str) -> str:
     return feature or "Other"
 
 
-def run_agent_layer(cases, model, repeat, parallel, llm, use_judge, out_dir, max_attempts=3) -> list[dict]:
+def run_agent_layer(cases, model, repeat, parallel, llm, use_judge, out_dir, available_tools=None,
+                    max_attempts=3) -> list[dict]:
     jobs = [(c, r) for c in cases for r in range(1, repeat + 1)]
     pause = {"until": 0.0}
     lock = threading.Lock()
@@ -110,7 +115,8 @@ def run_agent_layer(cases, model, repeat, parallel, llm, use_judge, out_dir, max
             token = get_token()  # refreshed per run; long evaluations outlive one token
             try:
                 res = run_question(case["question"], model["id"], model["name"], token, llm=llm,
-                                   trace_path=out_dir / "traces" / f"{case['id']}-run{run}.jsonl")
+                                   trace_path=out_dir / "traces" / f"{case['id']}-run{run}.jsonl",
+                                   available_tools=available_tools)
             except Exception as exc:  # one broken run must not stop the batch
                 res = {"answer": "", "dax": [], "tools": [], "tool_errors": [f"runner error: {exc}"],
                        "llm": llm or "", "seconds": 0, "throttled": False, "blocked_until": None}
@@ -150,7 +156,7 @@ def md_escape(text: str, limit: int = 220) -> str:
 
 
 def build_report(model, findings, runs, args, started) -> str:
-    icon = {PASS: "✅", WARN: "⚠️", FAIL: "❌"}
+    icon = {PASS: "✅", WARN: "⚠️", FAIL: "❌", INFO: "ℹ️"}
     lines = [
         f"# AI readiness evaluation: {model['name']}",
         "",
@@ -161,27 +167,33 @@ def build_report(model, findings, runs, args, started) -> str:
         "",
         "## Scorecard",
         "",
-        "| Layer | Pass | Warn | Fail | Score |",
-        "| --- | ---: | ---: | ---: | ---: |",
+        "Score = (pass + half of warn) / checks. Info rows aren't scored.",
+        "",
+        "| Layer | Pass | Warn | Fail | Info | Score |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
     by_layer = defaultdict(list)
     for f in findings:
         by_layer[f["layer"]].append(f["status"])
     for layer, st in by_layer.items():
-        lines.append(f"| {layer} | {st.count(PASS)} | {st.count(WARN)} | {st.count(FAIL)} | "
-                     f"{(st.count(PASS) + 0.5 * st.count(WARN)) / len(st):.0%} |")
+        n = len(st) - st.count(INFO)
+        score = f"{(st.count(PASS) + 0.5 * st.count(WARN)) / n:.0%}" if n else "–"
+        lines.append(f"| {layer} | {st.count(PASS)} | {st.count(WARN)} | {st.count(FAIL)} | {st.count(INFO)} | "
+                     f"{score} |")
     scored = [r for r in runs if r["status"] != "ERROR"]
     errors = len(runs) - len(scored)
     if runs:
         ok = sum(r["passed"] for r in scored)
         rate = f"{ok / len(scored):.0%}" if scored else "–"
-        lines.append(f"| L4 agent | {ok} | – | {len(scored) - ok} | {rate} |")
+        lines.append(f"| L4 agent | {ok} | – | {len(scored) - ok} | – | {rate} |")
         if errors:
             lines += ["", f"> {errors} agent run(s) were throttled by Power BI and are excluded from the scores. "
                           "Rerun them with `--questions` and a lower `--parallel`."]
 
     feats = defaultdict(lambda: [0, 0])
     for f in findings:
+        if f["status"] == INFO:
+            continue
         g = feature_group(f["feature"])
         feats[g][0] += f["status"] == PASS
         feats[g][1] += 1
@@ -196,7 +208,8 @@ def build_report(model, findings, runs, args, started) -> str:
     for layer in by_layer:
         lines += ["", f"## {layer}", "", "| | Check | Detail |", "| --- | --- | --- |"]
         for f in [x for x in findings if x["layer"] == layer]:
-            lines.append(f"| {icon[f['status']]} | {md_escape(f['check'], 80)} | {md_escape(f['detail'], 600)} |")
+            lines.append(f"| {icon.get(f['status'], f['status'])} | {md_escape(f['check'], 80)} | "
+                         f"{md_escape(f['detail'], 600)} |")
 
     if runs:
         lines += ["", "## L4 agent", "", "| | ID | Feature | Question | Pass rate | Notes |",
@@ -266,8 +279,9 @@ def main() -> int:
                    help="Agent runs at the same time. Power BI throttles bursts; keep it at 1-2")
     p.add_argument("--llm", help="Model for Copilot CLI, for example claude-sonnet-5 (default: CLI default)")
     p.add_argument("--judge", action="store_true", help="Also grade answers with an LLM critic (Copilot CLI)")
-    p.add_argument("--testset", default=str(LAB / "testset"))
-    p.add_argument("--out", default=str(LAB / "results"))
+    p.add_argument("--testset", default=str(LAB / "testset"),
+                   help="Folder with questions.csv, value-probes.csv and readiness-rules.json")
+    p.add_argument("--out", default=str(LAB / "results"), help="Folder for the run results")
     p.add_argument("--fail-under", type=float, default=0.0,
                    help="Exit with code 1 if the L4 pass rate is below this value (0-1), or any L1-L3 check fails")
     p.add_argument("--rescore", metavar="RUN_DIR",
@@ -298,7 +312,7 @@ def main() -> int:
     findings: list[dict] = []
     if "lint" in layers:
         print("L1 readiness lint")
-        findings += readiness_lint(model["schema"], rules, LAB)
+        findings += readiness_lint(model["schema"], rules, testset)
         findings += discoverability(client, model["id"], model["name"])
     if "grounding" in layers:
         print("L2 value grounding")
@@ -308,8 +322,12 @@ def main() -> int:
         findings += ground_truth(client, model["id"], cases)
     runs: list[dict] = []
     if "agent" in layers:
-        print(f"L4 agent: {len(cases)} question(s) x {args.repeat} run(s)")
-        runs = run_agent_layer(cases, model, args.repeat, args.parallel, args.llm, args.judge, out_dir)
+        try:
+            tools = agent_tools(client.list_tools())
+        except FabricIQError:
+            tools = agent_tools()
+        print(f"L4 agent: {len(cases)} question(s) x {args.repeat} run(s); agent tools: {', '.join(tools)}")
+        runs = run_agent_layer(cases, model, args.repeat, args.parallel, args.llm, args.judge, out_dir, tools)
 
     write_csv(out_dir / "findings.csv", findings)
     write_csv(out_dir / "agent-runs.csv", runs)
